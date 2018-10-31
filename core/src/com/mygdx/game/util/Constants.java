@@ -13,7 +13,7 @@ public class Constants
 	public static final float VIEWPORT_HEIGHT = 5.0f;
 	
 	//Location of Description file for texture atlas
-	public static final String TEXTURE_ATLAS_OBJECTS = "images/dungeongamemain.pack.atlas";
+	public static final String TEXTURE_ATLAS_OBJECTS = "images/dungeongame.pack.atlas";
 	
 	//Location of image file for level
 	public static final String LEVEL = "levels/level.png";
