@@ -22,8 +22,8 @@ public class Assets implements Disposable, AssetErrorListener {
 
 	private AssetManager assetManager;
 
-	public AssetBunny bunny;
-	public AssetRock rock;
+	public AssetBoss boss;
+	public AssetPhantom phantom;
 	public AssetGoldCoin goldCoin;
 	public AssetFeather feather;
 	public AssetLevelDecoration levelDecoration;
@@ -58,7 +58,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		}
 
 		// create game resource objects
-		bunny = new AssetBunny(atlas);
+		boss = new AssetBoss(atlas);
 		rock = new AssetRock(atlas);
 		goldCoin = new AssetGoldCoin(atlas);
 		feather = new AssetFeather(atlas);
@@ -83,15 +83,12 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 
 	/**
-	 * @author Kevin Rutter Initializes and holds the game's decorative textures.
+	 * 
 	 */
 	public class AssetLevelDecoration {
-		public final AtlasRegion cloud01;
-		public final AtlasRegion cloud02;
-		public final AtlasRegion cloud03;
-		public final AtlasRegion mountainLeft;
-		public final AtlasRegion mountainRight;
-		public final AtlasRegion waterOverlay;
+		
+		
+		//public final AtlasRegion cloud01;
 
 		/**
 		 * Initialize atlas regions.
@@ -100,20 +97,15 @@ public class Assets implements Disposable, AssetErrorListener {
 		 *            The texture atlas being used.
 		 */
 		public AssetLevelDecoration(TextureAtlas atlas) {
-			cloud01 = atlas.findRegion("cloud01");
-			cloud02 = atlas.findRegion("cloud02");
-			cloud03 = atlas.findRegion("cloud03");
-			mountainLeft = atlas.findRegion("mountain_left");
-			mountainRight = atlas.findRegion("mountain_right");
-			waterOverlay = atlas.findRegion("water_overlay");
+			
 		}
 	}
 
 	/**
 	 * @author Gabe Werick This class holds info for the Bunny Head texture
 	 */
-	public class AssetBunny {
-		public final AtlasRegion head;
+	public class AssetBoss {
+		public final AtlasRegion boss;
 
 		/**
 		 * Sets head to hold the reference to the correct region for bunny_head
@@ -121,8 +113,8 @@ public class Assets implements Disposable, AssetErrorListener {
 		 * @param atlas
 		 *            Texture atlas
 		 */
-		public AssetBunny(TextureAtlas atlas) {
-			head = atlas.findRegion("bunny_head");
+		public AssetBoss(TextureAtlas atlas) {
+			boss = atlas.findRegion("boss");
 		}
 	}
 
