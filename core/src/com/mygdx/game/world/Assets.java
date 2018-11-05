@@ -65,7 +65,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		archer = new AssetArcher(atlas);
 		archmage = new AssetArchmage(atlas);
 		swordsman = new AssetSwordsman(atlas);
-		//levelDecoration = new AssetLevelDecoration(atlas);
+		levelDecoration = new AssetLevelDecoration(atlas);
 	}
 
 	/**

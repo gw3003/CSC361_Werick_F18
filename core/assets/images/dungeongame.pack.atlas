@@ -1,40 +1,61 @@
 
 dungeongame.pack.png
-size: 128,256
+size: 512,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 archerStand
   rotate: false
-  xy: 2, 67
+  xy: 2, 90
   size: 49, 79
   orig: 49, 79
   offset: 0, 0
   index: -1
 archmageStand
   rotate: false
-  xy: 2, 148
+  xy: 2, 171
   size: 68, 102
   orig: 68, 102
   offset: 0, 0
   index: -1
+bossDoor
+  rotate: false
+  xy: 53, 153
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 bossStand
   rotate: false
-  xy: 53, 75
+  xy: 72, 202
   size: 56, 71
   orig: 56, 71
+  offset: 0, 0
+  index: -1
+dungeonBackground
+  rotate: false
+  xy: 2, 275
+  size: 500, 575
+  orig: 500, 575
   offset: 0, 0
   index: -1
 grueStand
   rotate: false
-  xy: 53, 2
+  xy: 130, 202
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
+normalDoor
+  rotate: false
+  xy: 72, 184
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 swordsmanStand
   rotate: false
-  xy: 72, 164
+  xy: 2, 2
   size: 41, 86
   orig: 41, 86
   offset: 0, 0

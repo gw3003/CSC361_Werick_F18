@@ -94,10 +94,8 @@ public class WorldController extends InputAdapter
 		testSprites = new Sprite[5];
 		//Create a list of texture regions
 		Array<TextureRegion> regions = new Array<TextureRegion>();
-		regions.add(Assets.instance.archer.archer);
-		regions.add(Assets.instance.archmage.archmage);
-		regions.add(Assets.instance.boss.boss);
-		regions.add(Assets.instance.swordsman.swordsman);
+		regions.add(Assets.instance.levelDecoration.background);
+		
 		
 		// Create new sprites using random texture region
 		for (int i = 0; i < testSprites.length; i++)
