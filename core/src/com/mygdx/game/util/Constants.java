@@ -19,5 +19,5 @@ public class Constants
 	public static final String LEVEL = "levels/level.dng";
 	
 	//Current level file version capable of being read
-	public static final float DNG_VERSION = 0.2f;
+	public static final String DNG_VERSION = "0.1";
 }
