@@ -16,8 +16,8 @@ public class Constants
 	public static final String TEXTURE_ATLAS_OBJECTS = "images/dungeongame.pack.atlas";
 	
 	//Location of image file for level
-	public static final String LEVEL = "levels/level.dng";
+	public static final String LEVEL = "../core/assets/level/level.txt";
 	
 	//Current level file version capable of being read
-	public static final float DNG_VERSION = 0.2f;
+	public static final String DNG_VERSION = "0.1";
 }

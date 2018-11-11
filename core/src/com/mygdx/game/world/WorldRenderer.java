@@ -26,6 +26,20 @@ public class WorldRenderer implements Disposable
 		this.worldController = worldController;
 		init();
 	}
+	
+	/**
+	 * This method calls the world rendering methods
+	 * 
+	 * @param batch the SpriteBatch to be used
+	 */
+	private void renderWorld(SpriteBatch batch)
+	{
+		worldController.cameraHelper.applyTo(camera);
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		worldController.level.render(batch);
+		batch.end();
+	}
 
 	/**
 	 * Initializes the batch and camera variables Camera is set to the
@@ -49,26 +63,10 @@ public class WorldRenderer implements Disposable
 	 */
 	public void render()
 	{
-		renderTestObjects();
+		renderWorld(batch);
 	}
 
-	/**
-	 * Method responsible for rendering objects contained in batch variable
-	 */
-	private void renderTestObjects()
-	{
-		worldController.cameraHelper.applyTo(camera);
-		// sets batch to use the object information from camera for rendering
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		// renders
-		for (Sprite sprite : worldController.testSprites)
-		{
-			sprite.draw(batch);
-		}
-
-		batch.end();
-	}
+	
 
 	/**
 	 * When called resizes the camera to the called height and width
