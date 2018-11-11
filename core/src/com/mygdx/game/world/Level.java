@@ -6,12 +6,16 @@ import java.util.Scanner;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.objects.AbstractGameObject;
 import com.mygdx.game.objects.DungeonBackground;
 import com.mygdx.game.util.Constants;
+
 
 public class Level
 {
 	public Array<DungeonBackground> rooms;
+	
+	private int roomNum;
 	
 	public Level(String filename)
 	{
@@ -25,6 +29,29 @@ public class Level
 		{
 			FileReader fr = new FileReader(Constants.LEVEL);
 			Scanner dng = new Scanner(fr);
+			
+			String line = "";
+			//check if file version matches current version
+			line = dng.nextLine();
+			if(!line.equals(Constants.DNG_VERSION))
+			{
+				System.out.println("Error! wrong dng file version");
+				System.exit(0);
+			}
+			
+			//find how many rooms there are
+			line = dng.nextLine();
+			roomNum = Integer.parseInt(line);
+			
+			int roomHeight = 0;
+			for(int i = 0; i < roomNum ; i++)
+			{
+				AbstractGameObject obj = new DungeonBackground(2);
+				obj.position.set(0,roomHeight);
+				rooms.add((DungeonBackground) obj);
+			}
+			dng.close();
+			
 		} catch (FileNotFoundException e)
 		{
 			System.out.println(e.getMessage());
@@ -34,11 +61,13 @@ public class Level
 		
 		
 		
-		//read how many rooms there are
+		
 	}
 	
 	public void render(SpriteBatch batch)
 	{
-		
+		//Draw room backgrounds
+		for (DungeonBackground dung : rooms)
+			dung.render(batch);
 	}
 }
