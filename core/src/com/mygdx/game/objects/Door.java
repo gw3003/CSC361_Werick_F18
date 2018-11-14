@@ -7,7 +7,7 @@ import com.mygdx.game.world.Assets;
 /**
  * @author Gabe Werick
  */
-public class DungeonBackground extends AbstractGameObject
+public class Door extends AbstractGameObject
 {
 	
 	private TextureRegion dungeonBackground;
@@ -16,16 +16,16 @@ public class DungeonBackground extends AbstractGameObject
 	
 	/**
 	 * Constructor
-	 * @param size how big the background should be
+	 * @param size how big the door should be
 	 */
-	public DungeonBackground(int size)
+	public Door(int size)
 	{
 		this.size = size;
 		init();
 	}
 	
 	/**
-	 * Initializes size of background
+	 * Initializes size of door
 	 */
 	private void init()
 	{
@@ -37,7 +37,7 @@ public class DungeonBackground extends AbstractGameObject
 		size += dimension.x * 2;
 	}
 	
-	private void drawBackground(SpriteBatch batch, float offsetX, float offsetY) 
+	private void drawDoor(SpriteBatch batch, float offsetX, float offsetY) 
 	{
 		TextureRegion reg = null;
 		float xRel = dimension.x * offsetX;
@@ -51,7 +51,7 @@ public class DungeonBackground extends AbstractGameObject
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		drawBackground(batch, 0.0f, 0.0f);
+		drawDoor(batch, 0.0f, 0.0f);
 	}
 
 }
