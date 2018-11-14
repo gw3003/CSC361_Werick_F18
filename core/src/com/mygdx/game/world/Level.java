@@ -25,6 +25,7 @@ public class Level
 	private void init(String filename)
 	{
 		rooms = new Array<DungeonBackground>();
+		int size = 3;
 		//open dng file
 		try
 		{
@@ -47,10 +48,10 @@ public class Level
 			int roomHeight = 0;
 			for(int i = 0; i < roomNum ; i++)
 			{
-				AbstractGameObject obj = new DungeonBackground(2);
+				AbstractGameObject obj = new DungeonBackground(size);
 				obj.position.set(0,roomHeight);
 				rooms.add((DungeonBackground) obj);
-				roomHeight += -2;
+				roomHeight += -size;
 			}
 			dng.close();
 			
