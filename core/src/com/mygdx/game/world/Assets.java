@@ -60,7 +60,6 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		// create game resource objects
 		boss = new AssetBoss(atlas);
-		//rock = new AssetRock(atlas);
 		phantom = new AssetPhantom(atlas);
 		archer = new AssetArcher(atlas);
 		archmage = new AssetArchmage(atlas);

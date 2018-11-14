@@ -10,7 +10,7 @@ import com.mygdx.game.world.Assets;
 public class Door extends AbstractGameObject
 {
 	
-	private TextureRegion dungeonBackground;
+	private TextureRegion door;
 	
 	private int size;
 	
@@ -31,7 +31,7 @@ public class Door extends AbstractGameObject
 	{
 		dimension.set(size, size);
 		
-		dungeonBackground = Assets.instance.levelDecoration.background;
+		door = Assets.instance..;
 		
 		origin.x = -dimension.x * 2;
 		size += dimension.x * 2;
@@ -42,7 +42,7 @@ public class Door extends AbstractGameObject
 		TextureRegion reg = null;
 		float xRel = dimension.x * offsetX;
 		
-		reg = dungeonBackground;
+		reg = door;
 		batch.draw(reg.getTexture(), origin.x + xRel, position.y + origin.y, origin.x, origin.y, dimension.x+0.01f,
 				dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
 				reg.getRegionHeight(), false, false);
