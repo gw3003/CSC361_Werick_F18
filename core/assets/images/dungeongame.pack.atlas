@@ -20,7 +20,7 @@ archmageStand
   index: -1
 bossDoor
   rotate: false
-  xy: 53, 153
+  xy: 72, 184
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -48,7 +48,7 @@ grueStand
   index: -1
 normalDoor
   rotate: false
-  xy: 72, 184
+  xy: 188, 257
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -58,5 +58,12 @@ swordsmanStand
   xy: 2, 2
   size: 41, 86
   orig: 41, 86
+  offset: 0, 0
+  index: -1
+wall
+  rotate: false
+  xy: 53, 137
+  size: 16, 32
+  orig: 16, 32
   offset: 0, 0
   index: -1
