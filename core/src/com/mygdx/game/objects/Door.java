@@ -31,19 +31,17 @@ public class Door extends AbstractGameObject
 	{
 		dimension.set(size, size);
 		
-		door = Assets.instance..;
+		door = Assets.instance.door.doorNormal;
 		
-		origin.x = -dimension.x * 2;
-		size += dimension.x * 2;
 	}
 	
 	private void drawDoor(SpriteBatch batch, float offsetX, float offsetY) 
 	{
 		TextureRegion reg = null;
-		float xRel = dimension.x * offsetX;
+
 		
 		reg = door;
-		batch.draw(reg.getTexture(), origin.x + xRel, position.y + origin.y, origin.x, origin.y, dimension.x+0.01f,
+		batch.draw(reg.getTexture(), position.x, position.y + origin.y, origin.x, origin.y, dimension.x+0.01f,
 				dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
 				reg.getRegionHeight(), false, false);
 	}

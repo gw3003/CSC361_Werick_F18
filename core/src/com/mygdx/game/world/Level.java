@@ -7,11 +7,13 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.AbstractGameObject;
 import com.mygdx.game.objects.Door;
 import com.mygdx.game.objects.DungeonBackground;
+import com.mygdx.game.objects.Wall;
 
 public class Level
 {
 	public Array<DungeonBackground> floor;
 	public Array<Door> door;
+	public Array<Wall> wall;
 	public static final String TAG = Level.class.getName();
 
 	public enum BLOCK_TYPE
@@ -48,17 +50,17 @@ public class Level
 	{
 		floor = new Array<DungeonBackground>();
 		door = new Array<Door>();
+		wall = new Array<Wall>();
 
 		// load image file that represents the level data
 		Pixmap pixmap = new Pixmap(Gdx.files.internal(filename));
 		// scan pixels from top-left to bottom-right
-		int lastPixel = -1;
 		for (int pixelY = 0; pixelY < pixmap.getHeight(); pixelY++)
 		{
 			for (int pixelX = 0; pixelX < pixmap.getWidth(); pixelX++)
 			{
 				AbstractGameObject obj = null;
-				float offsetHeight = 0;
+				float offsetWidth = -50f;
 				// height grows from bottom to top
 				float baseHeight = pixmap.getHeight() - pixelY;
 				// get color of current pixel as 32-bit RGBA value
@@ -78,8 +80,8 @@ public class Level
 
 					int size = 1;
 					obj = new DungeonBackground(size);
-					offsetHeight = -2.5f;
-					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					
+					obj.position.set(pixelX+offsetWidth, pixelY);
 					floor.add((DungeonBackground) obj);
 
 				}
@@ -89,9 +91,17 @@ public class Level
 				{
 					int size = 1;
 					obj = new Door(size);
-					offsetHeight = -2.5f;
-					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					obj.position.set(pixelX+offsetWidth, pixelY);
 					door.add((Door) obj);
+				}
+				
+				//Wall
+				else if(BLOCK_TYPE.WALL.sameColor(currentPixel))
+				{
+					int size = 1;
+					obj = new Wall(size);
+					obj.position.set(pixelX+offsetWidth, pixelY);
+					wall.add((Wall)obj);
 				}
 
 				// unknown object/pixel color
@@ -104,7 +114,6 @@ public class Level
 					Gdx.app.error(TAG, "Unknown object at x<" + pixelX + "> y<" + pixelY + ">: r<" + r + "> g<" + g
 							+ "> b<" + b + "> a<" + a + ">");
 				}
-				lastPixel = currentPixel;
 			}
 		}
 		pixmap.dispose();
@@ -121,5 +130,9 @@ public class Level
 		// Draw door
 		for (Door door : door)
 			door.render(batch);
+		
+		//Draw wall
+		for (Wall wall : wall)
+			wall.render(batch);
 	}
 }

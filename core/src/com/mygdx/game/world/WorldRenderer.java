@@ -59,7 +59,7 @@ public class WorldRenderer implements Disposable
 	}
 
 	/**
-	 * Calls renderTestObjects()
+	 * Calls renderWorld
 	 */
 	public void render()
 	{
