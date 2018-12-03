@@ -28,7 +28,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetArchmage archmage;
 	public AssetSwordsman swordsman;
 	public AssetLevelDecoration levelDecoration;
-
+	public AssetDoor door;
+	
 	// singleton: prevent instantiation from other classes
 	private Assets() {
 	}
@@ -60,12 +61,13 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		// create game resource objects
 		boss = new AssetBoss(atlas);
-		//rock = new AssetRock(atlas);
 		phantom = new AssetPhantom(atlas);
 		archer = new AssetArcher(atlas);
 		archmage = new AssetArchmage(atlas);
 		swordsman = new AssetSwordsman(atlas);
 		levelDecoration = new AssetLevelDecoration(atlas);
+		door = new AssetDoor(atlas);
+		
 	}
 
 	/**
@@ -93,6 +95,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	public class AssetLevelDecoration {
 		
 		public final AtlasRegion background;
+		public final AtlasRegion wall;
 
 		/**
 		 * Initialize atlas regions.
@@ -102,6 +105,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		 */
 		public AssetLevelDecoration(TextureAtlas atlas) {
 			background = atlas.findRegion("dungeonBackground");
+			wall = atlas.findRegion("wall");
 		}
 	}
 
@@ -137,7 +141,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		 *            Texture atlas
 		 */
 		public AssetDoor(TextureAtlas atlas) {
-			doorNormal = atlas.findRegion("doorNormal");
+			doorNormal = atlas.findRegion("normalDoor");
 			bossDoor = atlas.findRegion("bossDoor");
 		}
 	}
