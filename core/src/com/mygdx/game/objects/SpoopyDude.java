@@ -43,6 +43,8 @@ public class SpoopyDude extends AbstractGameObject{
 	public void update(float deltaTime)
 	{
 		super.update(deltaTime);
+		position.x += body.getLinearVelocity().x * deltaTime;
+		position.y += body.getLinearVelocity().y * deltaTime;
 	}
 	
 	/**
@@ -56,6 +58,38 @@ public class SpoopyDude extends AbstractGameObject{
 		reg = boss;
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
 				rotation, reg.getRegionX(), reg.getRegionY(),reg.getRegionWidth(), reg.getRegionHeight(), viewDirection == VIEW_DIRECTION.LEFT, false);
+	}
+	
+	/**
+	 * Moves the player up when called
+	 */
+	public void moveNorth()
+	{
+		body.applyLinearImpulse(0, 1.0f, position.x, position.y, true);
+	}
+	
+	/**
+	 * Moves player down when called
+	 */
+	public void moveSouth()
+	{
+		body.applyLinearImpulse(0, -1.0f, position.x, position.y, true);
+	}
+	
+	/**
+	 * Moves player left when called
+	 */
+	public void moveWest()
+	{
+		body.applyLinearImpulse(-1.0f, 0, position.x, position.y, true);
+	}
+	
+	/**
+	 * Moves player right when called
+	 */
+	public void moveEast()
+	{
+		body.applyLinearImpulse(1.0f, 0, position.x, position.y, true);
 	}
 
 }

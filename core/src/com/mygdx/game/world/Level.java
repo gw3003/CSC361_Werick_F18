@@ -149,8 +149,9 @@ public class Level {
 	public void update(float deltaTime) {
 		phantom.update(deltaTime);
 
-		for (Door door : door)
-			door.update(deltaTime);
+		//TODO
+		/*for (Door door : door)
+			door.update(deltaTime);*/
 
 	}
 }

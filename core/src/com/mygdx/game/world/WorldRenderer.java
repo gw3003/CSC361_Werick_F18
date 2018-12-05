@@ -3,6 +3,7 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.util.Constants;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -15,6 +16,9 @@ public class WorldRenderer implements Disposable
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private WorldController worldController;
+	
+	private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
+	private Box2DDebugRenderer b2debugRenderer;
 
 	/**
 	 * Constructor for WorldRenderer, initializes worldController then calls init
@@ -39,6 +43,10 @@ public class WorldRenderer implements Disposable
 		batch.begin();
 		worldController.level.render(batch);
 		batch.end();
+		if(DEBUG_DRAW_BOX2D_WORLD)
+		{
+			b2debugRenderer.render(worldController.b2world, camera.combined);
+		}
 	}
 
 	/**
@@ -56,6 +64,7 @@ public class WorldRenderer implements Disposable
 
 		// update camera with changes
 		camera.update();
+		b2debugRenderer = new Box2DDebugRenderer();
 	}
 
 	/**

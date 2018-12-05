@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.objects.Wall;
 import com.mygdx.game.util.CameraHelper;
@@ -20,20 +22,21 @@ import com.badlogic.gdx.InputAdapter;
  * @author Gabe Werick Contains controls for the game, such as for the camera,
  *         movement, etc.
  */
-public class WorldController extends InputAdapter {
+public class WorldController extends InputAdapter
+{
 	// Tag used for logging purposes
 	private static final String TAG = WorldController.class.getName();
 
 	public CameraHelper cameraHelper;
 	public Level level;
 
-	private boolean goalReached;
 	public World b2world;
 
 	/**
 	 * Constructor for WorldController.
 	 */
-	public WorldController() {
+	public WorldController()
+	{
 		init();
 	}
 
@@ -41,7 +44,8 @@ public class WorldController extends InputAdapter {
 	 * Initialization code for WorldController. Useful to call when resetting
 	 * objects.
 	 */
-	public void init() {
+	public void init()
+	{
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
 		initLevel();
@@ -50,43 +54,57 @@ public class WorldController extends InputAdapter {
 	/**
 	 * Initializes the level
 	 */
-	public void initLevel() {
+	public void initLevel()
+	{
 		level = new Level(Constants.LEVEL);
 		cameraHelper.setTarget(level.phantom);
+		initPhysics();
 	}
 
 	/**
 	 * Initializes physics for objects that need physics
 	 */
-	private void initPhysics() {
+	private void initPhysics()
+	{
 		// Create physics world
 		if (b2world != null)
 			b2world.dispose();
 		b2world = new World(new Vector2(0, -9.81f), true);
+		
+		Vector2 origin = new Vector2();
+		// Create physics bodies for Player
 
-		// Create physics bodies for the walls
-		for (Wall wall : level.wall) {
-			BodyDef bodyDef = new BodyDef();
-			bodyDef.type = BodyType.StaticBody;
-			bodyDef.position.set(wall.position);
-			
-			Body body = b2world.createBody(bodyDef);  
-			//TODO Left off here page 346 in book
-		}
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(level.phantom.position);
+
+		Body body = b2world.createBody(bodyDef);
+		level.phantom.body = body;
+		
+		PolygonShape polygonShape = new PolygonShape();
+		origin.x = level.phantom.origin.x;
+		origin.y = level.phantom.origin.y;
+		polygonShape.setAsBox(level.phantom.origin.x, level.phantom.origin.y, origin, 0);
+		
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = polygonShape;
+		body.createFixture(fixtureDef);
+		polygonShape.dispose();
 
 	}
 
 	/**
 	 * Resets game if R is pressed, changes selected sprite if space is pressed.
 	 * 
-	 * @param keycode
-	 *            The key that was released.
+	 * @param keycode The key that was released.
 	 * @return false
 	 */
 	@Override
-	public boolean keyUp(int keycode) {
+	public boolean keyUp(int keycode)
+	{
 		// Reset game world
-		if (keycode == Keys.R) {
+		if (keycode == Keys.R)
+		{
 			init();
 			Gdx.app.debug(TAG, "Game world resetted");
 		}
@@ -98,13 +116,12 @@ public class WorldController extends InputAdapter {
 	 * Generates a test pixmap that has a partially transparent red fill, yellow X,
 	 * and cyan border.
 	 * 
-	 * @param width
-	 *            width of the pixmap to generate.
-	 * @param height
-	 *            height of the pixmap to generate.
+	 * @param width  width of the pixmap to generate.
+	 * @param height height of the pixmap to generate.
 	 * @return The generated pixmap.
 	 */
-	private Pixmap createProceduralPixmap(int width, int height) {
+	private Pixmap createProceduralPixmap(int width, int height)
+	{
 		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 		// Fill square with red color at 50% opacity
 		pixmap.setColor(1, 0, 0, 0.5f);
@@ -122,22 +139,47 @@ public class WorldController extends InputAdapter {
 	/**
 	 * Applies updates to the game world many times a second.
 	 * 
-	 * @param deltaTime
-	 *            How much time has passed since last frame.
+	 * @param deltaTime How much time has passed since last frame.
 	 */
-	public void update(float deltaTime) {
+	public void update(float deltaTime)
+	{
+		handlePlayerInput(deltaTime);
 		handleDebugInput(deltaTime);
 		level.update(deltaTime);
 		cameraHelper.update(deltaTime);
+	}
+	
+	/**
+	 * Handles checking for inputs for player actions
+	 * @param deltaTime
+	 */
+	public void handlePlayerInput(float deltaTime)
+	{
+		if(Gdx.input.isKeyPressed(Keys.W))
+		{
+			level.phantom.moveNorth();
+		}
+		if(Gdx.input.isKeyPressed(Keys.A))
+		{
+			level.phantom.moveWest();
+		}
+		if(Gdx.input.isKeyPressed(Keys.S))
+		{
+			level.phantom.moveSouth();
+		}
+		if(Gdx.input.isKeyPressed(Keys.D))
+		{
+			level.phantom.moveEast();
+		}
 	}
 
 	/**
 	 * Tests out movement of sprites and camera.
 	 * 
-	 * @param deltaTime
-	 *            How much time since last frame.
+	 * @param deltaTime How much time since last frame.
 	 */
-	private void handleDebugInput(float deltaTime) {
+	private void handleDebugInput(float deltaTime)
+	{
 		if (Gdx.app.getType() != ApplicationType.Desktop)
 			return;
 
@@ -173,12 +215,11 @@ public class WorldController extends InputAdapter {
 	/**
 	 * Moves the Camera in a given direction
 	 * 
-	 * @param x
-	 *            Horizontal distance.
-	 * @param y
-	 *            Vertical distance.
+	 * @param x Horizontal distance.
+	 * @param y Vertical distance.
 	 */
-	private void moveCamera(float x, float y) {
+	private void moveCamera(float x, float y)
+	{
 		x += cameraHelper.getPosition().x;
 		y += cameraHelper.getPosition().y;
 		cameraHelper.setPosition(x, y);
