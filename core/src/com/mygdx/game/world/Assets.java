@@ -27,8 +27,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetArcher archer;
 	public AssetArchmage archmage;
 	public AssetSwordsman swordsman;
-	//public AssetLevelDecoration levelDecoration;
-
+	public AssetLevelDecoration levelDecoration;
+	public AssetDoor door;
+	
 	// singleton: prevent instantiation from other classes
 	private Assets() {
 	}
@@ -60,12 +61,13 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		// create game resource objects
 		boss = new AssetBoss(atlas);
-		//rock = new AssetRock(atlas);
 		phantom = new AssetPhantom(atlas);
 		archer = new AssetArcher(atlas);
 		archmage = new AssetArchmage(atlas);
 		swordsman = new AssetSwordsman(atlas);
-		//levelDecoration = new AssetLevelDecoration(atlas);
+		levelDecoration = new AssetLevelDecoration(atlas);
+		door = new AssetDoor(atlas);
+		
 	}
 
 	/**
@@ -85,23 +87,27 @@ public class Assets implements Disposable, AssetErrorListener {
 		Gdx.app.error(TAG, "Couldn't load asset '" + asset.fileName + "'", (Exception) throwable);
 	}
 
-	/*
+	
 	/**
+	 * Class that holds assets for decoration
 	 * 
-	 *
+	 */
 	public class AssetLevelDecoration {
 		
+		public final AtlasRegion background;
+		public final AtlasRegion wall;
 
 		/**
 		 * Initialize atlas regions.
 		 * 
 		 * @param atlas
 		 *            The texture atlas being used.
-		 *
+		 */
 		public AssetLevelDecoration(TextureAtlas atlas) {
-			
+			background = atlas.findRegion("dungeonBackground");
+			wall = atlas.findRegion("wall");
 		}
-	}*/
+	}
 
 	/**
 	 * @author Gabe Werick This class holds info for the Boss texture
@@ -120,26 +126,26 @@ public class Assets implements Disposable, AssetErrorListener {
 		}
 	}
 
-	/*
+	
 	/**
 	 * @author Gabe Werick This class holds info for rock edge and middle texture
-	 *
-	public class AssetRock {
-		public final AtlasRegion edge;
-		public final AtlasRegion middle;
+	 */
+	public class AssetDoor {
+		public final AtlasRegion doorNormal;
+		public final AtlasRegion bossDoor;
 
 		/**
 		 * sets edge and middle to hold references to the appropriate areas
 		 * 
 		 * @param atlas
 		 *            Texture atlas
-		 *
-		public AssetRock(TextureAtlas atlas) {
-			edge = atlas.findRegion("rock_edge");
-			middle = atlas.findRegion("rock_middle");
+		 */
+		public AssetDoor(TextureAtlas atlas) {
+			doorNormal = atlas.findRegion("normalDoor");
+			bossDoor = atlas.findRegion("bossDoor");
 		}
 	}
-	*/
+	
 
 	/**
 	 * @author Gabe Werick This class holds info for the phantom texture
