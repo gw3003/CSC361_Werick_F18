@@ -3,31 +3,35 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.graphics.Pixmap;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.objects.Wall;
 import com.mygdx.game.util.CameraHelper;
 import com.mygdx.game.util.Constants;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
 
 /**
- * @author Gabe Werick
- * Contains controls for the game, such as for the camera, movement, etc.
+ * @author Gabe Werick Contains controls for the game, such as for the camera,
+ *         movement, etc.
  */
 public class WorldController extends InputAdapter
 {
 	// Tag used for logging purposes
-	private static final String TAG =
-			WorldController.class.getName();
-	
+	private static final String TAG = WorldController.class.getName();
+
 	public CameraHelper cameraHelper;
 	public Level level;
-	
+
+	public World b2world;
+
 	/**
 	 * Constructor for WorldController.
 	 */
@@ -35,10 +39,10 @@ public class WorldController extends InputAdapter
 	{
 		init();
 	}
-	
+
 	/**
-	 * Initialization code for WorldController.
-	 * Useful to call when resetting objects.
+	 * Initialization code for WorldController. Useful to call when resetting
+	 * objects.
 	 */
 	public void init()
 	{
@@ -46,16 +50,54 @@ public class WorldController extends InputAdapter
 		cameraHelper = new CameraHelper();
 		initLevel();
 	}
-	
+
+	/**
+	 * Initializes the level
+	 */
 	public void initLevel()
 	{
 		level = new Level(Constants.LEVEL);
+		cameraHelper.setTarget(level.phantom);
+		initPhysics();
 	}
-	
+
+	/**
+	 * Initializes physics for objects that need physics
+	 */
+	private void initPhysics()
+	{
+		// Create physics world
+		if (b2world != null)
+			b2world.dispose();
+		b2world = new World(new Vector2(0, -9.81f), true);
+		
+		Vector2 origin = new Vector2();
+		// Create physics bodies for Player
+
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(level.phantom.position);
+
+		Body body = b2world.createBody(bodyDef);
+		level.phantom.body = body;
+		
+		PolygonShape polygonShape = new PolygonShape();
+		origin.x = level.phantom.origin.x;
+		origin.y = level.phantom.origin.y;
+		polygonShape.setAsBox(level.phantom.origin.x, level.phantom.origin.y, origin, 0);
+		
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = polygonShape;
+		body.createFixture(fixtureDef);
+		polygonShape.dispose();
+
+	}
+
 	/**
 	 * Resets game if R is pressed, changes selected sprite if space is pressed.
-	 * @param keycode	The key that was released.
-	 * @return			false
+	 * 
+	 * @param keycode The key that was released.
+	 * @return false
 	 */
 	@Override
 	public boolean keyUp(int keycode)
@@ -66,17 +108,17 @@ public class WorldController extends InputAdapter
 			init();
 			Gdx.app.debug(TAG, "Game world resetted");
 		}
-		
+
 		return false;
 	}
-	
-	
-	
+
 	/**
-	 * Generates a test pixmap that has a partially transparent red fill, yellow X, and cyan border.
-	 * @param width		width of the pixmap to generate.
-	 * @param height	height of the pixmap to generate.
-	 * @return			The generated pixmap.
+	 * Generates a test pixmap that has a partially transparent red fill, yellow X,
+	 * and cyan border.
+	 * 
+	 * @param width  width of the pixmap to generate.
+	 * @param height height of the pixmap to generate.
+	 * @return The generated pixmap.
 	 */
 	private Pixmap createProceduralPixmap(int width, int height)
 	{
@@ -93,27 +135,54 @@ public class WorldController extends InputAdapter
 		pixmap.drawRectangle(0, 0, width, height);
 		return pixmap;
 	}
-	
+
 	/**
 	 * Applies updates to the game world many times a second.
-	 * @param deltaTime		How much time has passed since last frame.
+	 * 
+	 * @param deltaTime How much time has passed since last frame.
 	 */
 	public void update(float deltaTime)
 	{
+		handlePlayerInput(deltaTime);
 		handleDebugInput(deltaTime);
+		level.update(deltaTime);
 		cameraHelper.update(deltaTime);
 	}
 	
 	/**
+	 * Handles checking for inputs for player actions
+	 * @param deltaTime
+	 */
+	public void handlePlayerInput(float deltaTime)
+	{
+		if(Gdx.input.isKeyPressed(Keys.W))
+		{
+			level.phantom.moveNorth();
+		}
+		if(Gdx.input.isKeyPressed(Keys.A))
+		{
+			level.phantom.moveWest();
+		}
+		if(Gdx.input.isKeyPressed(Keys.S))
+		{
+			level.phantom.moveSouth();
+		}
+		if(Gdx.input.isKeyPressed(Keys.D))
+		{
+			level.phantom.moveEast();
+		}
+	}
+
+	/**
 	 * Tests out movement of sprites and camera.
-	 * @param deltaTime		How much time since last frame.
+	 * 
+	 * @param deltaTime How much time since last frame.
 	 */
 	private void handleDebugInput(float deltaTime)
 	{
 		if (Gdx.app.getType() != ApplicationType.Desktop)
 			return;
-		
-		
+
 		// Camera Controls (move)
 		float camMoveSpeed = 5 * deltaTime;
 		float camMoveSpeedAccelerationFactor = 5;
@@ -129,7 +198,7 @@ public class WorldController extends InputAdapter
 			moveCamera(0, -camMoveSpeed);
 		if (Gdx.input.isKeyPressed(Keys.BACKSPACE))
 			cameraHelper.setPosition(0, 0);
-		
+
 		// Camera Controls (zoom)
 		float camZoomSpeed = 1 * deltaTime;
 		float camZoomSpeedAccelerationFactor = 5;
@@ -142,11 +211,12 @@ public class WorldController extends InputAdapter
 		if (Gdx.input.isKeyPressed(Keys.SLASH))
 			cameraHelper.setZoom(1);
 	}
-	
+
 	/**
 	 * Moves the Camera in a given direction
-	 * @param x		Horizontal distance.
-	 * @param y		Vertical distance.
+	 * 
+	 * @param x Horizontal distance.
+	 * @param y Vertical distance.
 	 */
 	private void moveCamera(float x, float y)
 	{
@@ -154,7 +224,5 @@ public class WorldController extends InputAdapter
 		y += cameraHelper.getPosition().y;
 		cameraHelper.setPosition(x, y);
 	}
-	
-	
-	
+
 }
