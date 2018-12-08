@@ -70,7 +70,17 @@ public class WorldController extends InputAdapter
 		if (b2world != null)
 			b2world.dispose();
 		b2world = new World(new Vector2(0, -9.81f), true);
-		
+
+		initPlayerPhysics();
+		initWallPhysics();
+
+	}
+
+	/**
+	 * initializes physics for player
+	 */
+	private void initPlayerPhysics()
+	{
 		Vector2 origin = new Vector2();
 		// Create physics bodies for Player
 
@@ -80,17 +90,45 @@ public class WorldController extends InputAdapter
 
 		Body body = b2world.createBody(bodyDef);
 		level.phantom.body = body;
-		
+
 		PolygonShape polygonShape = new PolygonShape();
 		origin.x = level.phantom.origin.x;
 		origin.y = level.phantom.origin.y;
 		polygonShape.setAsBox(level.phantom.origin.x, level.phantom.origin.y, origin, 0);
-		
+
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = polygonShape;
 		body.createFixture(fixtureDef);
 		polygonShape.dispose();
+	}
 
+	/**
+	 * Creates physics for walls
+	 */
+	private void initWallPhysics()
+	{
+		Vector2 origin = new Vector2();
+		// Create physics bodies for wall
+
+		for (Wall wall : level.wall)
+		{
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyType.StaticBody;
+			bodyDef.position.set(wall.position);
+
+			Body body = b2world.createBody(bodyDef);
+			wall.body = body;
+
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = wall.origin.x;
+			origin.y = wall.origin.y;
+			polygonShape.setAsBox(wall.origin.x, wall.origin.y, origin, 0);
+
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = polygonShape;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
 	}
 
 	/**
@@ -148,26 +186,27 @@ public class WorldController extends InputAdapter
 		level.update(deltaTime);
 		cameraHelper.update(deltaTime);
 	}
-	
+
 	/**
 	 * Handles checking for inputs for player actions
+	 * 
 	 * @param deltaTime
 	 */
 	public void handlePlayerInput(float deltaTime)
 	{
-		if(Gdx.input.isKeyPressed(Keys.W))
+		if (Gdx.input.isKeyPressed(Keys.W))
 		{
 			level.phantom.moveNorth();
 		}
-		if(Gdx.input.isKeyPressed(Keys.A))
+		if (Gdx.input.isKeyPressed(Keys.A))
 		{
 			level.phantom.moveWest();
 		}
-		if(Gdx.input.isKeyPressed(Keys.S))
+		if (Gdx.input.isKeyPressed(Keys.S))
 		{
 			level.phantom.moveSouth();
 		}
-		if(Gdx.input.isKeyPressed(Keys.D))
+		if (Gdx.input.isKeyPressed(Keys.D))
 		{
 			level.phantom.moveEast();
 		}

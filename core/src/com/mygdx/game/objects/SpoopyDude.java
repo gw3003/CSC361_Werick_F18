@@ -66,6 +66,8 @@ public class SpoopyDude extends AbstractGameObject{
 	public void moveNorth()
 	{
 		body.applyLinearImpulse(0, 1.0f, position.x, position.y, true);
+		//body.setTransform(this.position, this.rotation);
+		//System.out.println(body.getPosition());
 	}
 	
 	/**
