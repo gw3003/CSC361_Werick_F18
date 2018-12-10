@@ -7,10 +7,10 @@ package com.mygdx.game.util;
 public class Constants
 {
 	// Visible game world is 5 meters wide
-	public static final float VIEWPORT_WIDTH = 5.0f;
+	public static final float VIEWPORT_WIDTH = 6.0f;
 
 	// Visible game world is 5 meters tall
-	public static final float VIEWPORT_HEIGHT = 5.0f;
+	public static final float VIEWPORT_HEIGHT = 6.0f;
 	
 	//GUI Width
 	public static final float VIEWPORT_GUI_WIDTH = 800.0f;
