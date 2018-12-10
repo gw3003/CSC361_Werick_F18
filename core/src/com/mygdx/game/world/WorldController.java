@@ -3,6 +3,7 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.graphics.Pixmap;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -87,20 +88,25 @@ public class WorldController extends InputAdapter
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(level.phantom.position);
+		bodyDef.position.add(level.phantom.position.x, level.phantom.position.y);
+		bodyDef.angle = level.phantom.rotation * MathUtils.degreesToRadians;
+		bodyDef.fixedRotation = true;
 		
-		level.phantom.scale.set(1,1);
+		int scale = 1;
+		level.phantom.scale.set(scale, scale);
 
 		Body body = b2world.createBody(bodyDef);
 		level.phantom.body = body;
 
 		PolygonShape polygonShape = new PolygonShape();
-		origin.x = level.phantom.origin.x;
-		origin.y = level.phantom.origin.y;
-		polygonShape.setAsBox(level.phantom.origin.x, level.phantom.origin.y, origin, 0);
+		float halfWidth = level.phantom.bounds.width / 2 * scale;
+		float halfHeight = level.phantom.bounds.height / 2 * scale;
+		origin.y = level.phantom.dimension.y / 2;
+		polygonShape.setAsBox(halfWidth, halfHeight);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = polygonShape;
-		fixtureDef.density = 50;
+		fixtureDef.density = 75;
 		fixtureDef.restitution = 0.5f;
 		fixtureDef.friction = 0.5f;
 		body.createFixture(fixtureDef);
@@ -216,6 +222,12 @@ public class WorldController extends InputAdapter
 		{
 			level.phantom.moveEast();
 		}
+		if(Gdx.input.isKeyJustPressed(Keys.SPACE))
+		{
+			level.phantom.stopMomentum();
+		}
+		
+		
 	}
 
 	/**
