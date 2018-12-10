@@ -31,6 +31,7 @@ public class Wall extends AbstractGameObject{
 	private void init()
 	{
 		dimension.set(size, size);
+		origin.set(dimension.x/2, dimension.y/2);
 		
 		wall = Assets.instance.levelDecoration.wall;
 		
@@ -47,7 +48,7 @@ public class Wall extends AbstractGameObject{
 		TextureRegion reg = null;
 		
 		reg = wall;
-		batch.draw(reg.getTexture(), position.x, position.y + origin.y, origin.x, origin.y, dimension.x,
+		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x,
 				dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
 				reg.getRegionHeight(), false, false);
 	}

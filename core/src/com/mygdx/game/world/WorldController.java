@@ -69,7 +69,7 @@ public class WorldController extends InputAdapter
 		// Create physics world
 		if (b2world != null)
 			b2world.dispose();
-		b2world = new World(new Vector2(0, -9.81f), true);
+		b2world = new World(new Vector2(0, 0), true);
 
 		initPlayerPhysics();
 		initWallPhysics();
@@ -87,6 +87,8 @@ public class WorldController extends InputAdapter
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(level.phantom.position);
+		
+		level.phantom.scale.set(1,1);
 
 		Body body = b2world.createBody(bodyDef);
 		level.phantom.body = body;
@@ -98,6 +100,9 @@ public class WorldController extends InputAdapter
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = polygonShape;
+		fixtureDef.density = 50;
+		fixtureDef.restitution = 0.5f;
+		fixtureDef.friction = 0.5f;
 		body.createFixture(fixtureDef);
 		polygonShape.dispose();
 	}
@@ -184,6 +189,7 @@ public class WorldController extends InputAdapter
 		handlePlayerInput(deltaTime);
 		handleDebugInput(deltaTime);
 		level.update(deltaTime);
+		b2world.step(deltaTime, 8, 3);
 		cameraHelper.update(deltaTime);
 	}
 
