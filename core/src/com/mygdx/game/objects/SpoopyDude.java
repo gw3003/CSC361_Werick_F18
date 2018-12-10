@@ -17,7 +17,7 @@ public class SpoopyDude extends AbstractGameObject{
 	public enum VIEW_DIRECTION {LEFT, RIGHT};
 	public VIEW_DIRECTION viewDirection;
 	
-	/**
+	/** 
 	 * Constructor that just inits!
 	 */
 	public SpoopyDude ()
@@ -32,6 +32,7 @@ public class SpoopyDude extends AbstractGameObject{
 	{
 		dimension.set(1,1);
 		boss = Assets.instance.phantom.phantom;
+		bounds.set(0,0, dimension.x, dimension.y);
 		origin.set(dimension.x/2, dimension.y / 2);
 		viewDirection = VIEW_DIRECTION.RIGHT;
 	}
@@ -43,8 +44,6 @@ public class SpoopyDude extends AbstractGameObject{
 	public void update(float deltaTime)
 	{
 		super.update(deltaTime);
-		position.x += body.getLinearVelocity().x * deltaTime;
-		position.y += body.getLinearVelocity().y * deltaTime;
 	}
 	
 	/**
@@ -56,7 +55,7 @@ public class SpoopyDude extends AbstractGameObject{
 		
 		//Draw the image
 		reg = boss;
-		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
+		batch.draw(reg.getTexture(), position.x - origin.x, position.y- origin.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
 				rotation, reg.getRegionX(), reg.getRegionY(),reg.getRegionWidth(), reg.getRegionHeight(), viewDirection == VIEW_DIRECTION.LEFT, false);
 	}
 	
@@ -65,9 +64,7 @@ public class SpoopyDude extends AbstractGameObject{
 	 */
 	public void moveNorth()
 	{
-		body.applyLinearImpulse(0, 1.0f, position.x, position.y, true);
-		//body.setTransform(this.position, this.rotation);
-		//System.out.println(body.getPosition());
+		body.applyLinearImpulse(0, 2.0f, position.x, position.y, true);
 	}
 	
 	/**
@@ -75,7 +72,7 @@ public class SpoopyDude extends AbstractGameObject{
 	 */
 	public void moveSouth()
 	{
-		body.applyLinearImpulse(0, -1.0f, position.x, position.y, true);
+		body.applyLinearImpulse(0, -2.0f, position.x, position.y, true);
 	}
 	
 	/**
@@ -83,7 +80,7 @@ public class SpoopyDude extends AbstractGameObject{
 	 */
 	public void moveWest()
 	{
-		body.applyLinearImpulse(-1.0f, 0, position.x, position.y, true);
+		body.applyLinearImpulse(-2.0f, 0, position.x, position.y, true);
 	}
 	
 	/**
@@ -91,7 +88,7 @@ public class SpoopyDude extends AbstractGameObject{
 	 */
 	public void moveEast()
 	{
-		body.applyLinearImpulse(1.0f, 0, position.x, position.y, true);
+		body.applyLinearImpulse(2.0f, 0, position.x, position.y, true);
 	}
 
 }
