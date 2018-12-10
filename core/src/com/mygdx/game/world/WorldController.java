@@ -108,7 +108,7 @@ public class WorldController extends InputAdapter
 		fixtureDef.shape = polygonShape;
 		fixtureDef.density = 75;
 		fixtureDef.restitution = 0.5f;
-		fixtureDef.friction = 1;
+		fixtureDef.friction = 0.5f;
 		body.createFixture(fixtureDef);
 		polygonShape.dispose();
 	}
@@ -222,6 +222,12 @@ public class WorldController extends InputAdapter
 		{
 			level.phantom.moveEast();
 		}
+		if(Gdx.input.isKeyJustPressed(Keys.SPACE))
+		{
+			level.phantom.stopMomentum();
+		}
+		
+		
 	}
 
 	/**

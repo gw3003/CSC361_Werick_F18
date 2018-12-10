@@ -65,6 +65,7 @@ public class SpoopyDude extends AbstractGameObject{
 	public void moveNorth()
 	{
 		body.applyLinearImpulse(0, 2.0f, position.x, position.y, true);
+		//body.setLinearVelocity(0, 2.0f);
 	}
 	
 	/**
@@ -73,6 +74,7 @@ public class SpoopyDude extends AbstractGameObject{
 	public void moveSouth()
 	{
 		body.applyLinearImpulse(0, -2.0f, position.x, position.y, true);
+		//body.setLinearVelocity(0, -2.0f);
 	}
 	
 	/**
@@ -81,6 +83,7 @@ public class SpoopyDude extends AbstractGameObject{
 	public void moveWest()
 	{
 		body.applyLinearImpulse(-2.0f, 0, position.x, position.y, true);
+		//body.setLinearVelocity(-2.0f, 0);
 	}
 	
 	/**
@@ -89,6 +92,12 @@ public class SpoopyDude extends AbstractGameObject{
 	public void moveEast()
 	{
 		body.applyLinearImpulse(2.0f, 0, position.x, position.y, true);
+		//body.setLinearVelocity(2.0f, 0);
+	}
+	
+	public void stopMomentum()
+	{
+		body.setLinearVelocity(0, 0);
 	}
 
 }
