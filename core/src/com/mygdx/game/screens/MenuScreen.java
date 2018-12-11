@@ -2,12 +2,9 @@ package com.mygdx.game.screens;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.touchable;
 
@@ -25,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -34,7 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.util.AudioManager;
 import com.mygdx.game.util.Constants;
@@ -43,23 +38,21 @@ import com.mygdx.game.util.GamePreferences;
 /**
  * @author Gabe Werick
  *
- * This class builds the menu screen
+ *         This class builds the menu screen
  */
 public class MenuScreen extends AbstractGameScreen
 {
 	private static final String TAG = MenuScreen.class.getName();
 
 	private Stage stage;
-	private Skin skinCanyonBunny;
+	private Skin skinDungeonGame;
 
 	private Skin skinLibgdx;
 
 	// menu
 	private Image imgBackground;
+	private Image imgGrue;
 	private Image imgLogo;
-	private Image imgInfo;
-	private Image imgCoins;
-	private Image imgBunny;
 	private Button btnMenuPlay;
 	private Button btnMenuOptions;
 
@@ -71,19 +64,18 @@ public class MenuScreen extends AbstractGameScreen
 	private Slider sldSound;
 	private CheckBox chkMusic;
 	private Slider sldMusic;
-	private Image imgCharSkin;
 	private CheckBox chkShowFpsCounter;
 
 	// debug
 	private final float DEBUG_REBUILD_INTERVAL = 5.0f;
 	private boolean debugEnabled = false;
 	private float debugRebuildStage;
-	
+
 	public MenuScreen(Game game)
 	{
 		super(game);
 	}
-	
+
 	/**
 	 * render the menu screen
 	 */
@@ -107,7 +99,7 @@ public class MenuScreen extends AbstractGameScreen
 		stage.draw();
 		stage.setDebugAll(false);
 	}
-	
+
 	/**
 	 * Resizes the window
 	 * 
@@ -117,7 +109,7 @@ public class MenuScreen extends AbstractGameScreen
 	{
 		stage.getViewport().update(width, height, true);
 	}
-	
+
 	/**
 	 * shows the menuscreen
 	 */
@@ -128,7 +120,7 @@ public class MenuScreen extends AbstractGameScreen
 		Gdx.input.setInputProcessor(stage);
 		rebuildStage();
 	}
-	
+
 	/**
 	 * hides the menu screen
 	 */
@@ -136,10 +128,10 @@ public class MenuScreen extends AbstractGameScreen
 	public void hide()
 	{
 		stage.dispose();
-		skinCanyonBunny.dispose();
+		skinDungeonGame.dispose();
 		skinLibgdx.dispose();
 	}
-	
+
 	/**
 	 * menu screen has no need to be paused
 	 */
@@ -147,13 +139,13 @@ public class MenuScreen extends AbstractGameScreen
 	public void pause()
 	{
 	}
-	
+
 	/**
 	 * rebuilds the menu screen
 	 */
 	private void rebuildStage()
 	{
-		skinCanyonBunny = new Skin(Gdx.files.internal(Constants.SKIN_CANYONBUNNY_UI),
+		skinDungeonGame = new Skin(Gdx.files.internal(Constants.SKIN_DUNGEONGAME_UI),
 				new TextureAtlas(Constants.TEXTURE_ATLAS_UI));
 
 		skinLibgdx = new Skin(Gdx.files.internal(Constants.SKIN_LIBGDX_UI),
@@ -162,7 +154,7 @@ public class MenuScreen extends AbstractGameScreen
 		// build all layers
 		Table layerBackground = buildBackgroundLayer();
 		Table layerObjects = buildObjectsLayer();
-		Table layerLogos = buildLogosLayer();
+		Table layerLogo = buildLogoLayer();
 		Table layerControls = buildControlsLayer();
 		Table layerOptionsWindow = buildOptionsWindowLayer();
 
@@ -173,11 +165,31 @@ public class MenuScreen extends AbstractGameScreen
 		stack.setSize(Constants.VIEWPORT_GUI_WIDTH, Constants.VIEWPORT_GUI_HEIGHT);
 		stack.add(layerBackground);
 		stack.add(layerObjects);
-		stack.add(layerLogos);
 		stack.add(layerControls);
+		stack.add(layerLogo);
 		stage.addActor(layerOptionsWindow);
 	}
-	
+
+	/**
+	 * Builds the logo layer
+	 * 
+	 * @return the completed layer
+	 */
+	private Table buildLogoLayer()
+	{
+		Table layer = new Table();
+		layer.left().top();
+
+		// + Game Logo
+		imgLogo = new Image(skinDungeonGame, "logo");
+		layer.add(imgLogo);
+		layer.row().expandY();
+		
+		if (debugEnabled)
+			layer.debug();
+		return layer;
+	}
+
 	/**
 	 * builds the background layer
 	 * 
@@ -187,11 +199,11 @@ public class MenuScreen extends AbstractGameScreen
 	{
 		Table layer = new Table();
 		// + Background
-		imgBackground = new Image(skinCanyonBunny, "background");
+		imgBackground = new Image(skinDungeonGame, "background");
 		layer.add(imgBackground);
 		return layer;
 	}
-	
+
 	/**
 	 * builds the objects layer
 	 * 
@@ -200,41 +212,15 @@ public class MenuScreen extends AbstractGameScreen
 	private Table buildObjectsLayer()
 	{
 		Table layer = new Table();
-		// + Coins
-		imgCoins = new Image(skinCanyonBunny, "coins");
-		layer.addActor(imgCoins);
-		//imgCoins.setPosition(135, 80);
-		imgCoins.setOrigin(imgCoins.getWidth()/2,imgCoins.getHeight() /2);
-		imgCoins.addAction(sequence(moveTo(135, -20), scaleTo(0,0),fadeOut(0),delay(2.5f),parallel(moveBy(0,100,0.5f,Interpolation.swingOut),scaleTo(1.0f,1.0f,0.25f,Interpolation.linear),alpha(1.0f,0.5f))));
-		// + Bunny
-		imgBunny = new Image(skinCanyonBunny, "bunny");
-		layer.addActor(imgBunny);
-		imgBunny.addAction(sequence(moveTo(655,510),delay(4.0f),moveBy(-70,-100,0.5f, Interpolation.fade),moveBy(-100,-50,0.5f,Interpolation.fade),moveBy(-150,-300,1.0f,Interpolation.elasticIn)));
-		//imgBunny.setPosition(355, 40);
+		// Grue
+		imgGrue = new Image(skinDungeonGame, "grue");
+		layer.addActor(imgGrue);
+		imgGrue.addAction(sequence(moveTo(655, 510), delay(4.0f), moveBy(-70, -100, 0.5f, Interpolation.fade),
+				moveBy(-100, -50, 0.5f, Interpolation.fade), moveBy(-150, -300, 1.0f, Interpolation.elasticIn)));
+		// imgBunny.setPosition(355, 40);
 		return layer;
 	}
-	
-	/**
-	 * build layer for logos
-	 * 
-	 * @return completed layer
-	 */
-	private Table buildLogosLayer()
-	{
-		Table layer = new Table();
-		layer.left().top();
-		// + Game Logo
-		imgLogo = new Image(skinCanyonBunny, "logo");
-		layer.add(imgLogo);
-		layer.row().expandY();
-		// + Info Logos
-		imgInfo = new Image(skinCanyonBunny, "info");
-		layer.add(imgInfo).bottom();
-		if (debugEnabled)
-			layer.debug();
-		return layer;
-	}
-	
+
 	/**
 	 * build the layer with the controls
 	 * 
@@ -246,7 +232,7 @@ public class MenuScreen extends AbstractGameScreen
 
 		layer.right().bottom();
 		// + Play Button
-		btnMenuPlay = new Button(skinCanyonBunny, "play");
+		btnMenuPlay = new Button(skinDungeonGame, "play");
 		layer.add(btnMenuPlay);
 		btnMenuPlay.addListener(new ChangeListener()
 		{
@@ -259,7 +245,7 @@ public class MenuScreen extends AbstractGameScreen
 
 		layer.row();
 		// + Options Button
-		btnMenuOptions = new Button(skinCanyonBunny, "options");
+		btnMenuOptions = new Button(skinDungeonGame, "options");
 		layer.add(btnMenuOptions);
 		btnMenuOptions.addListener(new ChangeListener()
 		{
@@ -274,7 +260,7 @@ public class MenuScreen extends AbstractGameScreen
 
 		return layer;
 	}
-	
+
 	/**
 	 * Starts the game
 	 */
@@ -282,7 +268,7 @@ public class MenuScreen extends AbstractGameScreen
 	{
 		game.setScreen(new GameScreen(game));
 	}
-	
+
 	/**
 	 * Builds the options window layer
 	 * 
@@ -301,8 +287,8 @@ public class MenuScreen extends AbstractGameScreen
 		// Make options window slightly transparent
 		winOptions.setColor(1, 1, 1, 0.8f);
 		// Hide options window by default
-		showOptionsWindow(false,false);
-		//winOptions.setVisible(false);
+		showOptionsWindow(false, false);
+		// winOptions.setVisible(false);
 		if (debugEnabled)
 			winOptions.debug();
 		// Let TableLayout recalculate widget sizes and positions
@@ -311,7 +297,7 @@ public class MenuScreen extends AbstractGameScreen
 		winOptions.setPosition(Constants.VIEWPORT_GUI_WIDTH - winOptions.getWidth() - 50, 50);
 		return winOptions;
 	}
-	
+
 	/**
 	 * Builds audio settings window
 	 * 
@@ -342,7 +328,7 @@ public class MenuScreen extends AbstractGameScreen
 		tbl.row();
 		return tbl;
 	}
-	
+
 	/**
 	 * Builds a table that contains debug settings.
 	 * 
@@ -364,8 +350,7 @@ public class MenuScreen extends AbstractGameScreen
 		tbl.row();
 		return tbl;
 	}
-	
-	
+
 	/**
 	 * builds option window buttons
 	 * 
@@ -415,7 +400,7 @@ public class MenuScreen extends AbstractGameScreen
 
 		return tbl;
 	}
-	
+
 	/**
 	 * Loads the previously set settings to the options menu.
 	 */
@@ -436,7 +421,7 @@ public class MenuScreen extends AbstractGameScreen
 	{
 		loadSettings();
 		showMenuButtons(false);
-		showOptionsWindow(true,true);
+		showOptionsWindow(true, true);
 		btnMenuPlay.setVisible(false);
 		btnMenuOptions.setVisible(false);
 		winOptions.setVisible(true);
@@ -458,7 +443,7 @@ public class MenuScreen extends AbstractGameScreen
 	private void onCancelClicked()
 	{
 		showMenuButtons(true);
-		showOptionsWindow(false,true);
+		showOptionsWindow(false, true);
 		btnMenuPlay.setVisible(true);
 		btnMenuOptions.setVisible(true);
 		winOptions.setVisible(false);
@@ -478,28 +463,28 @@ public class MenuScreen extends AbstractGameScreen
 		prefs.showFpsCounter = chkShowFpsCounter.isChecked();
 		prefs.save();
 	}
-	
+
 	/**
 	 * Animates the buttons on the menu
 	 */
-	private void showMenuButtons(boolean visible) 
+	private void showMenuButtons(boolean visible)
 	{
 		float moveDuration = 1.0f;
 		Interpolation moveEasing = Interpolation.swing;
 		float delayOptionsButton = 0.25f;
-		
+
 		float moveX = 300 * (visible ? -1 : 1);
 		float moveY = 0 * (visible ? -1 : 1);
 		final Touchable touchEnabled = visible ? Touchable.enabled : Touchable.disabled;
-		btnMenuPlay.addAction(moveBy(moveX,moveY,moveDuration,moveEasing));
-		btnMenuOptions.addAction(sequence(delay(delayOptionsButton),moveBy(moveX, moveY, moveDuration, moveEasing)));
+		btnMenuPlay.addAction(moveBy(moveX, moveY, moveDuration, moveEasing));
+		btnMenuOptions.addAction(sequence(delay(delayOptionsButton), moveBy(moveX, moveY, moveDuration, moveEasing)));
 		SequenceAction seq = sequence();
-		if(visible)
-		seq.addAction(delay(delayOptionsButton + moveDuration));
-		seq.addAction(run(new Runnable() 
+		if (visible)
+			seq.addAction(delay(delayOptionsButton + moveDuration));
+		seq.addAction(run(new Runnable()
 		{
-			public void run() 
-			{ 
+			public void run()
+			{
 				btnMenuPlay.setTouchable(touchEnabled);
 				btnMenuPlay.setTouchable(touchEnabled);
 				btnMenuOptions.setTouchable(touchEnabled);
@@ -507,15 +492,15 @@ public class MenuScreen extends AbstractGameScreen
 		}));
 		stage.addAction(seq);
 	}
-	
+
 	/**
 	 * Animates buttons in Options windows
 	 */
-	private void showOptionsWindow (boolean visible,boolean animated) 
+	private void showOptionsWindow(boolean visible, boolean animated)
 	{
 		float alphaTo = visible ? 0.8f : 0.0f;
 		float duration = animated ? 1.0f : 0.0f;
 		Touchable touchEnabled = visible ? Touchable.enabled : Touchable.disabled;
-		winOptions.addAction(sequence(touchable(touchEnabled),alpha(alphaTo,duration)));
+		winOptions.addAction(sequence(touchable(touchEnabled), alpha(alphaTo, duration)));
 	}
 }
