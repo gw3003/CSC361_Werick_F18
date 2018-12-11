@@ -94,7 +94,7 @@ public class Level {
 				// Where player starts
 				else if (BLOCK_TYPE.SPAWNPOINT.sameColor(currentPixel)) {
 					obj = new SpoopyDude();
-					obj.position.set(pixelX + offsetWidth, invertY);
+					obj.position.set(pixelX + offsetWidth + -20, invertY +8);
 					phantom = (SpoopyDude) obj;
 
 					// add in floor tile where player starts
