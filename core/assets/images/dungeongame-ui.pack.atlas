@@ -1,0 +1,55 @@
+
+dungeongame-ui.pack.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background
+  rotate: false
+  xy: 2, 403
+  size: 1000, 500
+  orig: 1000, 500
+  offset: 0, 0
+  index: -1
+grue
+  rotate: false
+  xy: 2, 2
+  size: 158, 200
+  orig: 158, 200
+  offset: 0, 0
+  index: -1
+logo
+  rotate: false
+  xy: 2, 204
+  size: 346, 197
+  orig: 346, 197
+  offset: 0, 0
+  index: -1
+options-dn
+  rotate: false
+  xy: 350, 251
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
+options-up
+  rotate: false
+  xy: 162, 52
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
+play-dn
+  rotate: false
+  xy: 502, 251
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
+play-up
+  rotate: false
+  xy: 654, 251
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
