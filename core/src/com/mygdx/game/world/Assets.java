@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Disposable;
@@ -29,7 +32,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetSwordsman swordsman;
 	public AssetLevelDecoration levelDecoration;
 	public AssetDoor door;
-	
+	public AssetMusic music;
+
 	// singleton: prevent instantiation from other classes
 	private Assets() {
 	}
@@ -37,15 +41,19 @@ public class Assets implements Disposable, AssetErrorListener {
 	/**
 	 * Load up the texture atlas.
 	 * 
-	 * @param assetManager
-	 *            The asset manager this class will use.
+	 * @param assetManager The asset manager this class will use.
 	 */
 	public void init(AssetManager assetManager) {
 		this.assetManager = assetManager;
 		// set asset manager error handler
 		assetManager.setErrorListener(this);
+
 		// load texture atlas
 		assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS, TextureAtlas.class);
+
+		// load music
+		assetManager.load("music/keith303_-_brand_new_highscore.mp3", Music.class);
+
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
 		Gdx.app.debug(TAG, "# of assets loaded: " + assetManager.getAssetNames().size);
@@ -67,7 +75,8 @@ public class Assets implements Disposable, AssetErrorListener {
 		swordsman = new AssetSwordsman(atlas);
 		levelDecoration = new AssetLevelDecoration(atlas);
 		door = new AssetDoor(atlas);
-		
+		music = new AssetMusic(assetManager);
+
 	}
 
 	/**
@@ -87,21 +96,19 @@ public class Assets implements Disposable, AssetErrorListener {
 		Gdx.app.error(TAG, "Couldn't load asset '" + asset.fileName + "'", (Exception) throwable);
 	}
 
-	
 	/**
 	 * Class that holds assets for decoration
 	 * 
 	 */
 	public class AssetLevelDecoration {
-		
+
 		public final AtlasRegion background;
 		public final AtlasRegion wall;
 
 		/**
 		 * Initialize atlas regions.
 		 * 
-		 * @param atlas
-		 *            The texture atlas being used.
+		 * @param atlas The texture atlas being used.
 		 */
 		public AssetLevelDecoration(TextureAtlas atlas) {
 			background = atlas.findRegion("dungeonBackground");
@@ -118,15 +125,13 @@ public class Assets implements Disposable, AssetErrorListener {
 		/**
 		 * Sets head to hold the reference to the correct region for boss
 		 * 
-		 * @param atlas
-		 *            Texture atlas
+		 * @param atlas Texture atlas
 		 */
 		public AssetBoss(TextureAtlas atlas) {
 			boss = atlas.findRegion("bossStand");
 		}
 	}
 
-	
 	/**
 	 * @author Gabe Werick This class holds info for rock edge and middle texture
 	 */
@@ -137,15 +142,13 @@ public class Assets implements Disposable, AssetErrorListener {
 		/**
 		 * sets edge and middle to hold references to the appropriate areas
 		 * 
-		 * @param atlas
-		 *            Texture atlas
+		 * @param atlas Texture atlas
 		 */
 		public AssetDoor(TextureAtlas atlas) {
 			doorNormal = atlas.findRegion("normalDoor");
 			bossDoor = atlas.findRegion("bossDoor");
 		}
 	}
-	
 
 	/**
 	 * @author Gabe Werick This class holds info for the phantom texture
@@ -156,8 +159,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		/**
 		 * Sets head to hold the reference to the correct region for phantom
 		 * 
-		 * @param atlas
-		 *            Texture atlas
+		 * @param atlas Texture atlas
 		 */
 		public AssetPhantom(TextureAtlas atlas) {
 			phantom = atlas.findRegion("grueStand");
@@ -173,14 +175,13 @@ public class Assets implements Disposable, AssetErrorListener {
 		/**
 		 * Sets head to hold the reference to the correct region for archer
 		 * 
-		 * @param atlas
-		 *            Texture atlas
+		 * @param atlas Texture atlas
 		 */
 		public AssetArcher(TextureAtlas atlas) {
 			archer = atlas.findRegion("archerStand");
 		}
 	}
-	
+
 	/**
 	 * @author Gabe Werick This class holds info for the Archmage texture
 	 */
@@ -190,14 +191,13 @@ public class Assets implements Disposable, AssetErrorListener {
 		/**
 		 * Sets head to hold the reference to the correct region for archer
 		 * 
-		 * @param atlas
-		 *            Texture atlas
+		 * @param atlas Texture atlas
 		 */
 		public AssetArchmage(TextureAtlas atlas) {
 			archmage = atlas.findRegion("archmageStand");
 		}
 	}
-	
+
 	/**
 	 * @author Gabe Werick This class holds info for the Archmage texture
 	 */
@@ -207,11 +207,53 @@ public class Assets implements Disposable, AssetErrorListener {
 		/**
 		 * Sets head to hold the reference to the correct region for archer
 		 * 
-		 * @param atlas
-		 *            Texture atlas
+		 * @param atlas Texture atlas
 		 */
 		public AssetSwordsman(TextureAtlas atlas) {
 			swordsman = atlas.findRegion("swordsmanStand");
+		}
+	}
+
+	/**
+	 * 
+	 * @author Gabe Werick
+	 * 
+	 *         holds info for music
+	 *
+	 */
+	public class AssetMusic {
+		public final Music song01;
+
+		public AssetMusic(AssetManager am) {
+			song01 = am.get("music/keith303_-_brand_new_highscore.mp3", Music.class);
+		}
+	}
+
+	/**
+	 * @author Gabe Werick
+	 * 
+	 *         contains info for fonts
+	 *
+	 */
+	public class AssetFonts {
+		public final BitmapFont defaultSmall;
+		public final BitmapFont defaultNormal;
+		public final BitmapFont defaultBig;
+
+		public AssetFonts() {
+			// Create three fonts using Libgdx' 15px bitmap font
+			defaultSmall = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultNormal = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultBig = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			// set font sizes
+			defaultSmall.getData().setScale(0.75f);
+			defaultNormal.getData().setScale(1.0f);
+			defaultBig.getData().setScale(2.0f);
+			// enable linear texture filtering for smooth fonts
+			defaultSmall.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
 		}
 	}
 
