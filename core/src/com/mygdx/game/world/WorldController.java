@@ -15,6 +15,7 @@ import com.mygdx.game.objects.Wall;
 import com.mygdx.game.util.CameraHelper;
 import com.mygdx.game.util.Constants;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -32,12 +33,14 @@ public class WorldController extends InputAdapter
 	public Level level;
 
 	public World b2world;
+	private Game game;
 
 	/**
 	 * Constructor for WorldController.
 	 */
-	public WorldController()
+	public WorldController(Game game)
 	{
+		this.game = game;
 		init();
 	}
 
