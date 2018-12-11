@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.Wall;
 import com.mygdx.game.util.CameraHelper;
 import com.mygdx.game.util.Constants;
@@ -77,9 +78,39 @@ public class WorldController extends InputAdapter
 
 		initPlayerPhysics();
 		initWallPhysics();
+		initEnemyPhysics();
 
 	}
 
+	/**
+	 * initializes physics for enemy
+	 */
+	private void initEnemyPhysics()
+	{
+		Vector2 origin = new Vector2();
+		// Create physics bodies for wall
+
+		for (Enemy enemy : level.enemy)
+		{
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyType.StaticBody;
+			bodyDef.position.set(enemy.position);
+
+			Body body = b2world.createBody(bodyDef);
+			enemy.body = body;
+
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = enemy.origin.x;
+			origin.y = enemy.origin.y;
+			polygonShape.setAsBox(enemy.origin.x, enemy.origin.y, origin, 0);
+
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = polygonShape;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
+	}
+	
 	/**
 	 * initializes physics for player
 	 */

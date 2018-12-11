@@ -40,10 +40,8 @@ public class Wall extends AbstractGameObject{
 	/**
 	 * Draws the wall texture
 	 * @param batch spritebatch to be used
-	 * @param offsetX x offset
-	 * @param offsetY y offset
 	 */
-	private void drawWall(SpriteBatch batch, float offsetX, float offsetY) 
+	private void drawWall(SpriteBatch batch) 
 	{
 		TextureRegion reg = null;
 		
@@ -59,6 +57,6 @@ public class Wall extends AbstractGameObject{
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		drawWall(batch, 0.0f, 0.0f);
+		drawWall(batch);
 	}
 }
