@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.AbstractGameObject;
+import com.mygdx.game.objects.Coin;
 import com.mygdx.game.objects.Door;
 import com.mygdx.game.objects.DungeonBackground;
 import com.mygdx.game.objects.Enemy;
@@ -17,6 +18,7 @@ public class Level
 	public Array<Door> door;
 	public Array<Wall> wall;
 	public Array<Enemy> enemy;
+	public Array<Coin> coin;
 	public SpoopyDude phantom;
 	public static final String TAG = Level.class.getName();
 
@@ -27,7 +29,8 @@ public class Level
 		FLOOR(0, 0, 255), // Blue
 		SPAWNPOINT(255, 255, 255), // White
 		DOOR(255, 0, 0), // Red
-		ENEMY(255, 0, 255); // pink
+		ENEMY(255, 0, 255), // pink
+		COIN(0, 255, 0); // green
 
 		private int color;
 
@@ -58,6 +61,7 @@ public class Level
 		door = new Array<Door>();
 		wall = new Array<Wall>();
 		enemy = new Array<Enemy>();
+		coin = new Array<Coin>();
 		phantom = null;
 
 		// load image file that represents the level data
@@ -133,6 +137,19 @@ public class Level
 					obj.position.set(pixelX + offsetWidth, invertY);
 					floor.add((DungeonBackground) obj);
 				}
+				
+				//Coin
+				else if (BLOCK_TYPE.COIN.sameColor(currentPixel))
+				{
+					obj = new Coin();
+					obj.position.set(pixelX + offsetWidth, invertY);
+					coin.add((Coin) obj);
+					
+					// add in floor tile where player starts
+					obj = new DungeonBackground(size);
+					obj.position.set(pixelX + offsetWidth, invertY);
+					floor.add((DungeonBackground) obj);
+				}
 
 				// unknown object/pixel color
 				else
@@ -173,6 +190,10 @@ public class Level
 		// Draw enemies
 		for (Enemy enemy: enemy)
 			enemy.render(batch);
+		
+		// Draw Coins
+		for (Coin coin: coin)
+			coin.render(batch);
 
 		// Draw player Character
 		phantom.render(batch);
