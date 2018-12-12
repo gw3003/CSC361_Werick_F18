@@ -38,6 +38,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetMusic music;
 	public AssetCoin coin;
 	public AssetFonts fonts;
+	public AssetSounds sounds;
 
 	// singleton: prevent instantiation from other classes
 	private Assets() {
@@ -58,6 +59,8 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		// load music
 		assetManager.load("music/keith303_-_brand_new_highscore.mp3", Music.class);
+		
+		assetManager.load("sounds/pickup_coin.wav", Sound.class);
 
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
@@ -83,6 +86,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		music = new AssetMusic(assetManager);
 		coin = new AssetCoin(atlas);
 		fonts = new AssetFonts();
+		sounds = new AssetSounds(assetManager);
 
 	}
 
@@ -92,6 +96,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	@Override
 	public void dispose() {
 		assetManager.dispose();
+		fonts.defaultSmall.dispose();
+		fonts.defaultNormal.dispose();
+		fonts.defaultBig.dispose();
 	}
 
 	/**
@@ -129,6 +136,23 @@ public class Assets implements Disposable, AssetErrorListener {
 			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
+		}
+	}
+	
+	/**
+	 * @author Gabe Werick
+	 * 
+	 * holds sound info
+	 *
+	 */
+	public class AssetSounds
+	{
+		
+		public final Sound pickupcoin;
+		
+		public AssetSounds(AssetManager am)
+		{
+			pickupcoin = am.get("sounds/pickup_coin.wav", Sound.class);
 		}
 	}
 
