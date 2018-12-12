@@ -6,9 +6,12 @@ import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.util.Constants;
 
@@ -151,9 +154,19 @@ public class Assets implements Disposable, AssetErrorListener {
 
 	public class AssetCoin {
 		public final AtlasRegion coin;
+		public final Animation<TextureRegion> animCoin;
 
 		public AssetCoin(TextureAtlas atlas) {
 			coin = atlas.findRegion("item_gold_coin");
+			
+			//Animate the coin
+			Array<AtlasRegion> regions = atlas.findRegions("anim_gold_coin");
+			AtlasRegion region = regions.first();
+			for(int i = 0; i < 10; i++)
+			{
+				regions.insert(0, region);
+			}
+			animCoin = new Animation<TextureRegion>(1.0f/20.0f, regions, Animation.PlayMode.LOOP_PINGPONG);
 		}
 	}
 

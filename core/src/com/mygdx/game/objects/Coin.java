@@ -3,6 +3,7 @@ package com.mygdx.game.objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.world.Assets;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * @author Gabe Werick
@@ -31,6 +32,9 @@ public class Coin extends AbstractGameObject {
 	private void init() {
 		dimension.set(size, size);
 		origin.set(dimension.x / 2, dimension.y / 2);
+		
+		setAnimation(Assets.instance.coin.animCoin);
+		stateTime = MathUtils.random(0.0f, 1.0f);
 
 		coin = Assets.instance.coin.coin;
 	}
@@ -53,7 +57,7 @@ public class Coin extends AbstractGameObject {
 	private void drawCoin(SpriteBatch batch) {
 		TextureRegion reg = null;
 
-		reg = coin;
+		reg = animation.getKeyFrame(stateTime, true);
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x, dimension.y, scale.x,
 				scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(), reg.getRegionHeight(),
 				false, false);
