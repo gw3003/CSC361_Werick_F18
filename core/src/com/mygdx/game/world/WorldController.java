@@ -17,6 +17,7 @@ import com.mygdx.game.objects.Door;
 import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.Wall;
 import com.mygdx.game.screens.MenuScreen;
+import com.mygdx.game.util.AudioManager;
 import com.mygdx.game.util.CameraHelper;
 import com.mygdx.game.util.Constants;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -150,6 +151,7 @@ public class WorldController extends InputAdapter {
 	 */
 	private void onCollisionPhantomWithCoin(Coin coin) {
 		coin.collected = true;
+		AudioManager.instance.play(Assets.instance.sounds.pickupcoin);
 		score += coin.getScore();
 		Gdx.app.log(TAG, "Gold coin Collected!");
 	}
