@@ -33,6 +33,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetLevelDecoration levelDecoration;
 	public AssetDoor door;
 	public AssetMusic music;
+	public AssetCoin coin;
+	public AssetFonts fonts;
 
 	// singleton: prevent instantiation from other classes
 	private Assets() {
@@ -76,6 +78,8 @@ public class Assets implements Disposable, AssetErrorListener {
 		levelDecoration = new AssetLevelDecoration(atlas);
 		door = new AssetDoor(atlas);
 		music = new AssetMusic(assetManager);
+		coin = new AssetCoin(atlas);
+		fonts = new AssetFonts();
 
 	}
 
@@ -97,6 +101,35 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 
 	/**
+	 * 
+	 * @author Gabe Werick
+	 * 
+	 *         font stuff
+	 *
+	 */
+	public class AssetFonts {
+		public final BitmapFont defaultSmall;
+		public final BitmapFont defaultNormal;
+		public final BitmapFont defaultBig;
+
+		public AssetFonts() {
+			// Create three fonts using Libgdx' 15px bitmap font
+			defaultSmall = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultNormal = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultBig = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			// set font sizes
+			defaultSmall.getData().setScale(0.75f);
+			defaultNormal.getData().setScale(1.0f);
+			defaultBig.getData().setScale(2.0f);
+			// enable linear texture filtering for smooth fonts
+			defaultSmall.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		}
+	}
+
+	/**
 	 * Class that holds assets for decoration
 	 * 
 	 */
@@ -113,6 +146,14 @@ public class Assets implements Disposable, AssetErrorListener {
 		public AssetLevelDecoration(TextureAtlas atlas) {
 			background = atlas.findRegion("dungeonBackground");
 			wall = atlas.findRegion("wall");
+		}
+	}
+
+	public class AssetCoin {
+		public final AtlasRegion coin;
+
+		public AssetCoin(TextureAtlas atlas) {
+			coin = atlas.findRegion("item_gold_coin");
 		}
 	}
 
@@ -226,34 +267,6 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		public AssetMusic(AssetManager am) {
 			song01 = am.get("music/keith303_-_brand_new_highscore.mp3", Music.class);
-		}
-	}
-
-	/**
-	 * @author Gabe Werick
-	 * 
-	 *         contains info for fonts
-	 *
-	 */
-	public class AssetFonts {
-		public final BitmapFont defaultSmall;
-		public final BitmapFont defaultNormal;
-		public final BitmapFont defaultBig;
-
-		public AssetFonts() {
-			// Create three fonts using Libgdx' 15px bitmap font
-			defaultSmall = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
-			defaultNormal = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
-			defaultBig = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
-			// set font sizes
-			defaultSmall.getData().setScale(0.75f);
-			defaultNormal.getData().setScale(1.0f);
-			defaultBig.getData().setScale(2.0f);
-			// enable linear texture filtering for smooth fonts
-			defaultSmall.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
 		}
 	}
 

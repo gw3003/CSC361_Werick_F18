@@ -23,8 +23,8 @@ public class DesktopLauncher {
 			settings.maxHeight = 1024;
 			settings.duplicatePadding = false;
 			settings.debug = drawDebugOutline;
-			//TexturePacker.process(settings, "assets-raw/images", "../core/assets/images", "dungeongame.pack");
-			TexturePacker.process(settings, "assets-raw/images-ui", "../core/assets/images", "dungeongame-ui.pack");
+			TexturePacker.process(settings, "assets-raw/images", "../core/assets/images", "dungeongame.pack");
+			//TexturePacker.process(settings, "assets-raw/images-ui", "../core/assets/images", "dungeongame-ui.pack");
 		}
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new DungeonGameMain(), config);
