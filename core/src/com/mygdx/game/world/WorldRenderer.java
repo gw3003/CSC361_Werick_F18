@@ -3,6 +3,7 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.util.Constants;
@@ -14,10 +15,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class WorldRenderer implements Disposable
 {
 	private OrthographicCamera camera;
+	private OrthographicCamera cameraGUI;
 	private SpriteBatch batch;
 	private WorldController worldController;
 	
-	private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
+	private static final boolean DEBUG_DRAW_BOX2D_WORLD = false;
 	private Box2DDebugRenderer b2debugRenderer;
 
 	/**
@@ -64,6 +66,13 @@ public class WorldRenderer implements Disposable
 
 		// update camera with changes
 		camera.update();
+		
+		//GUI camera
+		cameraGUI = new OrthographicCamera(Constants.VIEWPORT_GUI_WIDTH, Constants.VIEWPORT_GUI_HEIGHT);
+		cameraGUI.position.set(0, 0, 0);
+		cameraGUI.setToOrtho(true);
+		cameraGUI.update();
+		
 		b2debugRenderer = new Box2DDebugRenderer();
 	}
 
@@ -73,9 +82,45 @@ public class WorldRenderer implements Disposable
 	public void render()
 	{
 		renderWorld(batch);
+		renderGUI(batch);
 	}
 
+	/**
+	 * Renders GUI elements
+	 * @param batch
+	 */
+	public void renderGUI(SpriteBatch batch)
+	{
+		batch.setProjectionMatrix(cameraGUI.combined);
+		batch.begin();
+		
+		renderGUIScore(batch);
+		
+		batch.end();
+	}
 	
+	/**
+	 * Renders the score
+	 * @param batch
+	 */
+	public void renderGUIScore(SpriteBatch batch)
+	{
+		float x = -15;
+		float y = -15;
+		float offsetX = 50;
+		float offsetY = 50;
+
+		if (worldController.scoreVisual < worldController.score)
+		{
+			long shakeAlpha = System.currentTimeMillis() % 360;
+			float shakeDist = 1.5f;
+			offsetX += MathUtils.sinDeg(shakeAlpha * 2.2f) * shakeDist;
+			offsetY += MathUtils.sinDeg(shakeAlpha * 2.9f) * shakeDist;
+		}
+
+		batch.draw(Assets.instance.coin.coin, x, y, offsetX, offsetY, 100, 100, 0.35f, -0.35f, 0);
+		Assets.instance.fonts.defaultBig.draw(batch, "" + (int) worldController.scoreVisual, x + 75, y + 37);
+	}
 
 	/**
 	 * When called resizes the camera to the called height and width

@@ -266,6 +266,7 @@ public class MenuScreen extends AbstractGameScreen
 	 */
 	private void onPlayClicked()
 	{
+		AudioManager.instance.stopMusic();
 		game.setScreen(new GameScreen(game));
 	}
 

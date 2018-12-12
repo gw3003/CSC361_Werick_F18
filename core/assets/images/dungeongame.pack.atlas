@@ -4,65 +4,114 @@ size: 512,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+anim_gold_coin
+  rotate: false
+  xy: 188, 333
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: 1
+anim_gold_coin
+  rotate: false
+  xy: 246, 333
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: 2
+anim_gold_coin
+  rotate: false
+  xy: 304, 333
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: 3
+anim_gold_coin
+  rotate: false
+  xy: 362, 333
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: 4
+anim_gold_coin
+  rotate: false
+  xy: 420, 333
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: 5
+anim_gold_coin
+  rotate: false
+  xy: 2, 60
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: 6
 archerStand
   rotate: false
-  xy: 2, 90
+  xy: 2, 206
   size: 49, 79
   orig: 49, 79
   offset: 0, 0
   index: -1
 archmageStand
   rotate: false
-  xy: 2, 171
+  xy: 2, 287
   size: 68, 102
   orig: 68, 102
   offset: 0, 0
   index: -1
 bossDoor
   rotate: false
-  xy: 72, 184
+  xy: 72, 300
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 bossStand
   rotate: false
-  xy: 72, 202
+  xy: 72, 318
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 dungeonBackground
   rotate: false
-  xy: 2, 275
+  xy: 2, 391
   size: 500, 575
   orig: 500, 575
   offset: 0, 0
   index: -1
 grueStand
   rotate: false
-  xy: 130, 202
+  xy: 130, 318
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
+item_gold_coin
+  rotate: false
+  xy: 2, 2
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
 normalDoor
   rotate: false
-  xy: 188, 257
+  xy: 53, 269
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 swordsmanStand
   rotate: false
-  xy: 2, 2
+  xy: 2, 118
   size: 41, 86
   orig: 41, 86
   offset: 0, 0
   index: -1
 wall
   rotate: false
-  xy: 53, 137
+  xy: 478, 357
   size: 16, 32
   orig: 16, 32
   offset: 0, 0

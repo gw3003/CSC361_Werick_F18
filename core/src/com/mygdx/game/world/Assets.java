@@ -6,9 +6,12 @@ import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.util.Constants;
 
@@ -33,6 +36,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetLevelDecoration levelDecoration;
 	public AssetDoor door;
 	public AssetMusic music;
+	public AssetCoin coin;
+	public AssetFonts fonts;
+	public AssetSounds sounds;
 
 	// singleton: prevent instantiation from other classes
 	private Assets() {
@@ -53,6 +59,8 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		// load music
 		assetManager.load("music/keith303_-_brand_new_highscore.mp3", Music.class);
+		
+		assetManager.load("sounds/pickup_coin.wav", Sound.class);
 
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
@@ -76,6 +84,9 @@ public class Assets implements Disposable, AssetErrorListener {
 		levelDecoration = new AssetLevelDecoration(atlas);
 		door = new AssetDoor(atlas);
 		music = new AssetMusic(assetManager);
+		coin = new AssetCoin(atlas);
+		fonts = new AssetFonts();
+		sounds = new AssetSounds(assetManager);
 
 	}
 
@@ -85,6 +96,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	@Override
 	public void dispose() {
 		assetManager.dispose();
+		fonts.defaultSmall.dispose();
+		fonts.defaultNormal.dispose();
+		fonts.defaultBig.dispose();
 	}
 
 	/**
@@ -94,6 +108,52 @@ public class Assets implements Disposable, AssetErrorListener {
 	@Override
 	public void error(AssetDescriptor asset, Throwable throwable) {
 		Gdx.app.error(TAG, "Couldn't load asset '" + asset.fileName + "'", (Exception) throwable);
+	}
+
+	/**
+	 * 
+	 * @author Gabe Werick
+	 * 
+	 *         font stuff
+	 *
+	 */
+	public class AssetFonts {
+		public final BitmapFont defaultSmall;
+		public final BitmapFont defaultNormal;
+		public final BitmapFont defaultBig;
+
+		public AssetFonts() {
+			// Create three fonts using Libgdx' 15px bitmap font
+			defaultSmall = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultNormal = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultBig = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			// set font sizes
+			defaultSmall.getData().setScale(0.75f);
+			defaultNormal.getData().setScale(1.0f);
+			defaultBig.getData().setScale(2.0f);
+			// enable linear texture filtering for smooth fonts
+			defaultSmall.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		}
+	}
+	
+	/**
+	 * @author Gabe Werick
+	 * 
+	 * holds sound info
+	 *
+	 */
+	public class AssetSounds
+	{
+		
+		public final Sound pickupcoin;
+		
+		public AssetSounds(AssetManager am)
+		{
+			pickupcoin = am.get("sounds/pickup_coin.wav", Sound.class);
+		}
 	}
 
 	/**
@@ -113,6 +173,24 @@ public class Assets implements Disposable, AssetErrorListener {
 		public AssetLevelDecoration(TextureAtlas atlas) {
 			background = atlas.findRegion("dungeonBackground");
 			wall = atlas.findRegion("wall");
+		}
+	}
+
+	public class AssetCoin {
+		public final AtlasRegion coin;
+		public final Animation<TextureRegion> animCoin;
+
+		public AssetCoin(TextureAtlas atlas) {
+			coin = atlas.findRegion("item_gold_coin");
+			
+			//Animate the coin
+			Array<AtlasRegion> regions = atlas.findRegions("anim_gold_coin");
+			AtlasRegion region = regions.first();
+			for(int i = 0; i < 10; i++)
+			{
+				regions.insert(0, region);
+			}
+			animCoin = new Animation<TextureRegion>(1.0f/20.0f, regions, Animation.PlayMode.LOOP_PINGPONG);
 		}
 	}
 
@@ -226,34 +304,6 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		public AssetMusic(AssetManager am) {
 			song01 = am.get("music/keith303_-_brand_new_highscore.mp3", Music.class);
-		}
-	}
-
-	/**
-	 * @author Gabe Werick
-	 * 
-	 *         contains info for fonts
-	 *
-	 */
-	public class AssetFonts {
-		public final BitmapFont defaultSmall;
-		public final BitmapFont defaultNormal;
-		public final BitmapFont defaultBig;
-
-		public AssetFonts() {
-			// Create three fonts using Libgdx' 15px bitmap font
-			defaultSmall = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
-			defaultNormal = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
-			defaultBig = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
-			// set font sizes
-			defaultSmall.getData().setScale(0.75f);
-			defaultNormal.getData().setScale(1.0f);
-			defaultBig.getData().setScale(2.0f);
-			// enable linear texture filtering for smooth fonts
-			defaultSmall.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
 		}
 	}
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,7 +12,12 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.objects.Coin;
+import com.mygdx.game.objects.Door;
+import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.Wall;
+import com.mygdx.game.screens.MenuScreen;
+import com.mygdx.game.util.AudioManager;
 import com.mygdx.game.util.CameraHelper;
 import com.mygdx.game.util.Constants;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -24,13 +30,21 @@ import com.badlogic.gdx.InputAdapter;
  * @author Gabe Werick Contains controls for the game, such as for the camera,
  *         movement, etc.
  */
-public class WorldController extends InputAdapter
-{
+public class WorldController extends InputAdapter {
 	// Tag used for logging purposes
 	private static final String TAG = WorldController.class.getName();
 
 	public CameraHelper cameraHelper;
 	public Level level;
+
+	public int score;
+	public float scoreVisual;
+
+	private boolean goalReached = false;
+
+	// Rectangles for easy collision detection of shame
+	private Rectangle r1 = new Rectangle();
+	private Rectangle r2 = new Rectangle();
 
 	public World b2world;
 	private Game game;
@@ -38,8 +52,7 @@ public class WorldController extends InputAdapter
 	/**
 	 * Constructor for WorldController.
 	 */
-	public WorldController(Game game)
-	{
+	public WorldController(Game game) {
 		this.game = game;
 		init();
 	}
@@ -48,8 +61,7 @@ public class WorldController extends InputAdapter
 	 * Initialization code for WorldController. Useful to call when resetting
 	 * objects.
 	 */
-	public void init()
-	{
+	public void init() {
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
 		initLevel();
@@ -58,33 +70,151 @@ public class WorldController extends InputAdapter
 	/**
 	 * Initializes the level
 	 */
-	public void initLevel()
-	{
+	public void initLevel() {
 		level = new Level(Constants.LEVEL);
 		cameraHelper.setTarget(level.phantom);
+		score = 0;
+		scoreVisual = score;
 		initPhysics();
 	}
 
 	/**
 	 * Initializes physics for objects that need physics
 	 */
-	private void initPhysics()
-	{
+	private void initPhysics() {
 		// Create physics world
 		if (b2world != null)
 			b2world.dispose();
 		b2world = new World(new Vector2(0, 0), true);
 
+		// b2world.setContactListener(level.coin);
+
 		initPlayerPhysics();
 		initWallPhysics();
+		initEnemyPhysics();
+		initCoinPhysics();
 
+	}
+
+	/**
+	 * I'm out of time so time for collision detection of shame
+	 */
+	private void testCollisions() {
+		r1.set(level.phantom.position.x, level.phantom.position.y, level.phantom.bounds.width,
+				level.phantom.bounds.height);
+
+		// Test collision: Phantom <-> Coin
+		for (Coin coin : level.coin) {
+			if (coin.collected)
+				continue;
+			r2.set(coin.position.x, coin.position.y, coin.bounds.width, coin.bounds.height);
+			if (!r1.overlaps(r2))
+				continue;
+			onCollisionPhantomWithCoin(coin);
+		}
+		
+		//Test collision: Phantom <-> Door
+		if(!goalReached)
+		{
+			for(Door door : level.door)
+			{
+				r2.set(door.position.x, door.position.y, door.bounds.width, door.bounds.height);
+				if(!r1.overlaps(r2))
+					continue;
+				onCollisionWithGoal();
+			}
+		}
+	}
+	/**
+	 * Ends the game
+	 */
+	private void onCollisionWithGoal()
+	{
+		goalReached = true;
+		System.out.println("The final score is " + score);
+		backToMenu();
+	}
+	
+	/**
+	 * sends us back to menu screen
+	 */
+	private void backToMenu()
+	{
+		// switch to menu screen
+		game.setScreen(new MenuScreen(game));
+	}
+
+	/**
+	 * Makes stuff happen when coin gets collected
+	 * 
+	 * @param coin
+	 */
+	private void onCollisionPhantomWithCoin(Coin coin) {
+		coin.collected = true;
+		AudioManager.instance.play(Assets.instance.sounds.pickupcoin);
+		score += coin.getScore();
+		Gdx.app.log(TAG, "Gold coin Collected!");
+	}
+
+	/**
+	 * Does the coin physics
+	 */
+	private void initCoinPhysics() {
+		Vector2 origin = new Vector2();
+		// Create physics bodies for wall
+
+		for (Coin coin : level.coin) {
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyType.StaticBody;
+			bodyDef.position.set(coin.position);
+
+			Body body = b2world.createBody(bodyDef);
+			coin.body = body;
+
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = coin.origin.x;
+			origin.y = coin.origin.y;
+			polygonShape.setAsBox(coin.origin.x, coin.origin.y, origin, 0);
+
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = polygonShape;
+			fixtureDef.isSensor = true;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
+	}
+
+	/**
+	 * initializes physics for enemy
+	 */
+	private void initEnemyPhysics() {
+		Vector2 origin = new Vector2();
+		// Create physics bodies for wall
+
+		for (Enemy enemy : level.enemy) {
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyType.StaticBody;
+			bodyDef.position.set(enemy.position);
+
+			Body body = b2world.createBody(bodyDef);
+			enemy.body = body;
+
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = enemy.origin.x;
+			origin.y = enemy.origin.y;
+			polygonShape.setAsBox(enemy.origin.x, enemy.origin.y, origin, 0);
+
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = polygonShape;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
 	}
 
 	/**
 	 * initializes physics for player
 	 */
-	private void initPlayerPhysics()
-	{
+	private void initPlayerPhysics() {
 		Vector2 origin = new Vector2();
 		// Create physics bodies for Player
 
@@ -94,7 +224,7 @@ public class WorldController extends InputAdapter
 		bodyDef.position.add(level.phantom.position.x, level.phantom.position.y);
 		bodyDef.angle = level.phantom.rotation * MathUtils.degreesToRadians;
 		bodyDef.fixedRotation = true;
-		
+
 		int scale = 1;
 		level.phantom.scale.set(scale, scale);
 
@@ -119,13 +249,11 @@ public class WorldController extends InputAdapter
 	/**
 	 * Creates physics for walls
 	 */
-	private void initWallPhysics()
-	{
+	private void initWallPhysics() {
 		Vector2 origin = new Vector2();
 		// Create physics bodies for wall
 
-		for (Wall wall : level.wall)
-		{
+		for (Wall wall : level.wall) {
 			BodyDef bodyDef = new BodyDef();
 			bodyDef.type = BodyType.StaticBody;
 			bodyDef.position.set(wall.position);
@@ -152,11 +280,9 @@ public class WorldController extends InputAdapter
 	 * @return false
 	 */
 	@Override
-	public boolean keyUp(int keycode)
-	{
+	public boolean keyUp(int keycode) {
 		// Reset game world
-		if (keycode == Keys.R)
-		{
+		if (keycode == Keys.R) {
 			init();
 			Gdx.app.debug(TAG, "Game world resetted");
 		}
@@ -172,8 +298,7 @@ public class WorldController extends InputAdapter
 	 * @param height height of the pixmap to generate.
 	 * @return The generated pixmap.
 	 */
-	private Pixmap createProceduralPixmap(int width, int height)
-	{
+	private Pixmap createProceduralPixmap(int width, int height) {
 		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 		// Fill square with red color at 50% opacity
 		pixmap.setColor(1, 0, 0, 0.5f);
@@ -193,10 +318,18 @@ public class WorldController extends InputAdapter
 	 * 
 	 * @param deltaTime How much time has passed since last frame.
 	 */
-	public void update(float deltaTime)
-	{
-		handlePlayerInput(deltaTime);
-		handleDebugInput(deltaTime);
+	public void update(float deltaTime) {
+		if (goalReached) {
+
+		} else {
+			handlePlayerInput(deltaTime);
+			handleDebugInput(deltaTime);
+		}
+		testCollisions();
+
+		if (scoreVisual < score)
+			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
+
 		level.update(deltaTime);
 		b2world.step(deltaTime, 8, 3);
 		cameraHelper.update(deltaTime);
@@ -207,30 +340,23 @@ public class WorldController extends InputAdapter
 	 * 
 	 * @param deltaTime
 	 */
-	public void handlePlayerInput(float deltaTime)
-	{
-		if (Gdx.input.isKeyPressed(Keys.W))
-		{
+	public void handlePlayerInput(float deltaTime) {
+		if (Gdx.input.isKeyPressed(Keys.W)) {
 			level.phantom.moveNorth();
 		}
-		if (Gdx.input.isKeyPressed(Keys.A))
-		{
+		if (Gdx.input.isKeyPressed(Keys.A)) {
 			level.phantom.moveWest();
 		}
-		if (Gdx.input.isKeyPressed(Keys.S))
-		{
+		if (Gdx.input.isKeyPressed(Keys.S)) {
 			level.phantom.moveSouth();
 		}
-		if (Gdx.input.isKeyPressed(Keys.D))
-		{
+		if (Gdx.input.isKeyPressed(Keys.D)) {
 			level.phantom.moveEast();
 		}
-		if(Gdx.input.isKeyJustPressed(Keys.SPACE))
-		{
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			level.phantom.stopMomentum();
 		}
-		
-		
+
 	}
 
 	/**
@@ -238,8 +364,7 @@ public class WorldController extends InputAdapter
 	 * 
 	 * @param deltaTime How much time since last frame.
 	 */
-	private void handleDebugInput(float deltaTime)
-	{
+	private void handleDebugInput(float deltaTime) {
 		if (Gdx.app.getType() != ApplicationType.Desktop)
 			return;
 
@@ -278,8 +403,7 @@ public class WorldController extends InputAdapter
 	 * @param x Horizontal distance.
 	 * @param y Vertical distance.
 	 */
-	private void moveCamera(float x, float y)
-	{
+	private void moveCamera(float x, float y) {
 		x += cameraHelper.getPosition().x;
 		y += cameraHelper.getPosition().y;
 		cameraHelper.setPosition(x, y);
