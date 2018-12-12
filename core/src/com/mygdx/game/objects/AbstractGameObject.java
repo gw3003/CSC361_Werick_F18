@@ -1,10 +1,12 @@
 package com.mygdx.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.graphics.g2d.Animation;
 
 /**
  * @author Gabe Werick
@@ -26,6 +28,9 @@ public abstract class AbstractGameObject {
 	public Rectangle bounds;
 
 	public Body body;
+	
+	public float stateTime;
+	public Animation<TextureRegion> animation;
 
 	/**
 	 * Builds the game object
@@ -42,6 +47,16 @@ public abstract class AbstractGameObject {
 		acceleration = new Vector2();
 		bounds = new Rectangle();
 	}
+	
+	/**
+	 * Does the animation stuff
+	 * @param animation
+	 */
+	public void setAnimation(Animation animation)
+	{
+		this.animation = animation;
+		stateTime = 0;
+	}
 
 	/**
 	 * Updates the object based on the timer
@@ -49,6 +64,7 @@ public abstract class AbstractGameObject {
 	 * @param deltaTime
 	 */
 	public void update(float deltaTime) {
+		stateTime += deltaTime;
 		position.set(body.getPosition());
 		rotation = body.getAngle() * MathUtils.radiansToDegrees;
 	}
