@@ -3,6 +3,8 @@ package com.mygdx.game.objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.world.Assets;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 
 /**
  * @author Gabe Werick
@@ -13,6 +15,8 @@ public class SpoopyDude extends AbstractGameObject{
 
 	public static final String TAG = SpoopyDude.class.getName();
 	private TextureRegion boss;
+	
+	public ParticleEffect dustParticles = new ParticleEffect();
 	
 	public enum VIEW_DIRECTION {LEFT, RIGHT};
 	public VIEW_DIRECTION viewDirection;
@@ -35,6 +39,9 @@ public class SpoopyDude extends AbstractGameObject{
 		bounds.set(0,0, dimension.x, dimension.y);
 		origin.set(dimension.x/2, dimension.y / 2);
 		viewDirection = VIEW_DIRECTION.RIGHT;
+		
+		dustParticles.load(Gdx.files.internal("particles/dust.pfx"), Gdx.files.internal("particles"));
+		
 	}
 	
 	/**
@@ -44,6 +51,11 @@ public class SpoopyDude extends AbstractGameObject{
 	public void update(float deltaTime)
 	{
 		super.update(deltaTime);
+		
+		dustParticles.update(deltaTime);
+		
+		dustParticles.setPosition(position.x + dimension.x /2, position.y);
+		dustParticles.start();
 	}
 	
 	/**
@@ -52,6 +64,8 @@ public class SpoopyDude extends AbstractGameObject{
 	@Override
 	public void render(SpriteBatch batch) {
 		TextureRegion reg = null;
+		
+		dustParticles.draw(batch);
 		
 		//Draw the image
 		reg = boss;
