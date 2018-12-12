@@ -13,8 +13,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.objects.Coin;
+import com.mygdx.game.objects.Door;
 import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.Wall;
+import com.mygdx.game.screens.MenuScreen;
 import com.mygdx.game.util.CameraHelper;
 import com.mygdx.game.util.Constants;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -36,6 +38,8 @@ public class WorldController extends InputAdapter {
 
 	public int score;
 	public float scoreVisual;
+
+	private boolean goalReached = false;
 
 	// Rectangles for easy collision detection of shame
 	private Rectangle r1 = new Rectangle();
@@ -107,14 +111,44 @@ public class WorldController extends InputAdapter {
 				continue;
 			onCollisionPhantomWithCoin(coin);
 		}
+		
+		//Test collision: Phantom <-> Door
+		if(!goalReached)
+		{
+			for(Door door : level.door)
+			{
+				r2.set(door.position.x, door.position.y, door.bounds.width, door.bounds.height);
+				if(!r1.overlaps(r2))
+					continue;
+				onCollisionWithGoal();
+			}
+		}
+	}
+	/**
+	 * Ends the game
+	 */
+	private void onCollisionWithGoal()
+	{
+		goalReached = true;
+		System.out.println("The final score is " + score);
+		backToMenu();
 	}
 	
 	/**
+	 * sends us back to menu screen
+	 */
+	private void backToMenu()
+	{
+		// switch to menu screen
+		game.setScreen(new MenuScreen(game));
+	}
+
+	/**
 	 * Makes stuff happen when coin gets collected
+	 * 
 	 * @param coin
 	 */
-	private void onCollisionPhantomWithCoin(Coin coin)
-	{
+	private void onCollisionPhantomWithCoin(Coin coin) {
 		coin.collected = true;
 		score += coin.getScore();
 		Gdx.app.log(TAG, "Gold coin Collected!");
@@ -283,13 +317,17 @@ public class WorldController extends InputAdapter {
 	 * @param deltaTime How much time has passed since last frame.
 	 */
 	public void update(float deltaTime) {
-		handlePlayerInput(deltaTime);
-		handleDebugInput(deltaTime);
+		if (goalReached) {
+
+		} else {
+			handlePlayerInput(deltaTime);
+			handleDebugInput(deltaTime);
+		}
 		testCollisions();
-		
+
 		if (scoreVisual < score)
 			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
-		
+
 		level.update(deltaTime);
 		b2world.step(deltaTime, 8, 3);
 		cameraHelper.update(deltaTime);
